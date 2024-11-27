@@ -2,6 +2,7 @@ package Trabalho1;
 
 class Main {
     public static void main(String[] args) {
-        System.out.println("Hello Word");
+        UILogin login = new UILogin();
+        login.login();
     }
 }
