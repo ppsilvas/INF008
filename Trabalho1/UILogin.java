@@ -1,10 +1,12 @@
 package Trabalho1;
 
-import java.util.HashMap;
 import java.util.Scanner;
 
 public class UILogin {
-    private Type checkCredentials(String username, String password){
+    private Costumer costumer;
+    private Administrator administrator;
+    
+    private Type checkCredentials(String email, String password){
         return Type.Costumer;
     }
 
@@ -12,13 +14,13 @@ public class UILogin {
         Scanner scanner = new Scanner(System.in);
         UICostumer costumerUi = new UICostumer();
         UIAdministrator administratorUi = new UIAdministrator();
-        System.out.println("Username: ");
-        String username =  scanner.nextLine();
+        System.out.println("Email: ");
+        String email =  scanner.nextLine();
         System.out.println("Password: ");
         String password = scanner.nextLine();
-        Type credentials = checkCredentials(username, password);
+        Type credentials = checkCredentials(email, password);
         if(credentials == Type.Costumer){
-            costumerUi.uiCostumer();;
+            costumerUi.uiCostumer(1);;
         }else{
             
         }
