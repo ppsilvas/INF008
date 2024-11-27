@@ -1,22 +1,34 @@
 package Trabalho1;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class ShoppingCart {
     private float orderTotal = 0;
+    private int costumerId;
     private ArrayList<Product> inCart;
+    private Product product;
 
-    public void Add(Product product){
-        inCart.add(product);
-        orderTotal += product.price;
+    public ShoppingCart(int costumerId){
+        this.costumerId = costumerId;
+    }
+
+    public void addInCart(int indexProduct){
+        System.out.println(product.getProduct(indexProduct));
+        inCart.add(product.getProduct(indexProduct));
+        orderTotal += product.getProduct(indexProduct).price;
     }
 
     public void viewShoppingCart(){
-        int length = inCart.size();
-        Product[] cartList = new Product[length];
-        cartList = inCart.toArray(cartList);
+        Product[] cartList = new Product[inCart.size()];
+        inCart.toArray(cartList);
         System.out.println("Cart items:"+cartList);
         System.out.println("Order total: "+orderTotal);
+    }
+
+    public void finishOrder(){
+        Order order = new Order(inCart, orderTotal);
+        orderTotal = 0;
+        inCart.removeAll(inCart);
     }
 }

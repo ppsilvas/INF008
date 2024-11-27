@@ -5,25 +5,27 @@ import java.util.Scanner;
 public class UICostumer {
     private Scanner scanner = new Scanner(System.in);
     private SystemUtil systemUtil = new SystemUtil();
-    private ShoppingCart shoppingCart = new ShoppingCart();
+    private ShoppingCart shoppingCart;
+    private Product product;
 
-    public void uiCostumer(){
+    public void uiCostumer(int id){
+        shoppingCart = new ShoppingCart(id);
         systemUtil.clearDisplay();
         System.out.println("[1]-Start New Order");
         System.out.println("[0]-Exit");
         int choice = scanner.nextInt();
         if(choice == 1){
-            startNewOrder();
+            startNewOrder(id);
         }else{
             handleLogout();
         }
     }
 
     private void handleLogout(){
-
+        shoppingCart = null;
     }
 
-    private void startNewOrder(){
+    private void startNewOrder(int id){
         systemUtil.clearDisplay();
         System.out.println("[1]-Add product");
         System.out.println("[2]-View shopping cart");
@@ -44,7 +46,7 @@ public class UICostumer {
                 finishOrder();
                 break;
             case 0:
-                uiCostumer();
+                uiCostumer(id);
                 break;
             default:
                 break;
@@ -52,8 +54,15 @@ public class UICostumer {
     }
 
     private void addProduct(){
-        
-        shoppingCart.Add(null);
+        int response = 1;
+        while(response == 1){
+            systemUtil.clearDisplay();
+            product.productList();
+            int choice = scanner.nextInt();
+            shoppingCart.addInCart(choice);
+            System.out.println("Continue adding?\n[1]-YES\n[0]-NO");
+            response = scanner.nextInt();
+        }
     }
 
     private void viewShoppingCart(){
@@ -61,6 +70,6 @@ public class UICostumer {
     }
 
     private void finishOrder(){
-
+        shoppingCart.finishOrder();
     }
 }
