@@ -3,8 +3,6 @@ package Trabalho1;
 import java.util.ArrayList;
 
 public class Administrator extends User{
-    protected ArrayList<Product> products;
-    protected ArrayList<Costumer> costumers;
     protected ArrayList<Administrator> administrators;
     public Administrator(String name, String email, String password, Type type){
         super(name, email, password, type);
@@ -12,13 +10,13 @@ public class Administrator extends User{
 
     public void createNewProduct(String name, String description, float price, int numberOfThisProductInStock, String category){
         Product product = new Product(name, description, price, numberOfThisProductInStock, category);
-        products.add(product);
+        product.addProduct(product);
     }
     
     public void createNewUser(String name, String email, String password, Type type, String adress){
         if(type == Type.Costumer){
             Costumer costumer = new Costumer(name, email, password, type, adress);
-            costumers.add(costumer);
+            costumer.addCostumer(costumer);
         }else{
             Administrator administrator = new Administrator(name, email, password, type);
             administrators.add(administrator);
