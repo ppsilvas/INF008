@@ -7,13 +7,14 @@ public class User {
     private String email;
     private String password;
     private static int numberOfUsers = 0;
-    private int type;
+    private Type type;
+    private SystemUtil systemUtil =  new SystemUtil(); 
 
-    public User(String name, String email, String password, int type){
+    public User(String name, String email, String password, Type type){
         id = numberOfUsers++;
         this.name = name;
         this.email = email;
-        this.password = password;
+        this.password = systemUtil.hashPassword(password);
         this.type = type;
     }
 }
