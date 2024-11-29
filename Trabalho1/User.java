@@ -10,6 +10,10 @@ public class User {
     private Type type;
     private SystemUtil systemUtil =  new SystemUtil(); 
 
+    public User(){
+
+    }
+
     public User(String name, String email, String password, Type type){
         id = numberOfUsers++;
         this.name = name;

@@ -1,31 +1,35 @@
 package Trabalho1;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class UICostumer {
     private Scanner scanner = new Scanner(System.in);
     private SystemUtil systemUtil = new SystemUtil();
-    private ShoppingCart shoppingCart;
-    private Product product;
+    private ShoppingCart shoppingCart = new ShoppingCart();
+    private Product product = new Product();
+    private int costumerId;
 
-    public void uiCostumer(int id){
+    public void uiCostumer(int id) throws IOException{
+        costumerId = id;
         shoppingCart = new ShoppingCart(id);
         systemUtil.clearDisplay();
         System.out.println("[1]-Start New Order");
         System.out.println("[0]-Exit");
         int choice = scanner.nextInt();
         if(choice == 1){
-            startNewOrder(id);
+            startNewOrder();
         }else{
             handleLogout();
         }
     }
 
-    private void handleLogout(){
+    private void handleLogout() throws IOException{
+        product.productSerialize();
         shoppingCart = null;
     }
 
-    private void startNewOrder(int id){
+    private void startNewOrder() throws IOException{
         systemUtil.clearDisplay();
         System.out.println("[1]-Add product");
         System.out.println("[2]-View shopping cart");
@@ -46,7 +50,7 @@ public class UICostumer {
                 finishOrder();
                 break;
             case 0:
-                uiCostumer(id);
+                uiCostumer(costumerId);
                 break;
             default:
                 break;
@@ -70,6 +74,6 @@ public class UICostumer {
     }
 
     private void finishOrder(){
-        shoppingCart.finishOrder();
+        shoppingCart.finishOrder(costumerId);
     }
 }

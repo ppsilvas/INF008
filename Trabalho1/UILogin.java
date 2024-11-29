@@ -1,16 +1,21 @@
 package Trabalho1;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class UILogin {
-    private Costumer costumer;
-    private Administrator administrator;
+    private Costumer costumer = new Costumer();
+    private Administrator administrator = new Administrator();
+    private Product product = new Product();
     
     private Type checkCredentials(String email, String password){
-        return Type.Costumer;
+        return Type.Administrator;
     }
 
-    public void login(){
+    public void login() throws ClassNotFoundException, IOException{
+        //costumer.costumerDeserialize();
+        //administrator.administratorDeserialize();
+        //product.productDeserialize();
         Scanner scanner = new Scanner(System.in);
         UICostumer costumerUi = new UICostumer();
         UIAdministrator administratorUi = new UIAdministrator();
@@ -22,7 +27,7 @@ public class UILogin {
         if(credentials == Type.Costumer){
             costumerUi.uiCostumer(1);;
         }else{
-            
+            administratorUi.uiAdministrator();
         }
         scanner.close();
     }
