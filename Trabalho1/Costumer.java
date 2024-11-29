@@ -10,10 +10,9 @@ import java.util.ArrayList;
 
 public class Costumer extends User implements Serializable{
     private String adress;
-    protected ArrayList<Costumer> costumers = new ArrayList<Costumer>();
 
     public Costumer(){
-        super();
+        super(null,null, null,null);
     }
 
     public Costumer(String name, String email, String password, Type type, String adress){
@@ -22,13 +21,12 @@ public class Costumer extends User implements Serializable{
     }
 
     public void addCostumer(Costumer costumer){
-        costumers.add(costumer);
+    
     }
 
     public void costumerDeserialize() throws IOException, ClassNotFoundException{
         FileInputStream fis = new FileInputStream("costumer.dat");
         ObjectInputStream ois = new ObjectInputStream(fis);
-        costumers = (ArrayList<Costumer>) ois.readObject();
         fis.close();
     }
 

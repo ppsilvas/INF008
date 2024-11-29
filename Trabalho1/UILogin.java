@@ -13,9 +13,6 @@ public class UILogin {
     }
 
     public void login() throws ClassNotFoundException, IOException{
-        //costumer.costumerDeserialize();
-        //administrator.administratorDeserialize();
-        //product.productDeserialize();
         Scanner scanner = new Scanner(System.in);
         UICostumer costumerUi = new UICostumer();
         UIAdministrator administratorUi = new UIAdministrator();

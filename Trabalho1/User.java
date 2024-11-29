@@ -1,5 +1,7 @@
 package Trabalho1;
 
+import java.util.HashMap;
+
 public class User {
 
     private int id;
@@ -8,9 +10,10 @@ public class User {
     private String password;
     private static int numberOfUsers = 0;
     private Type type;
-    private SystemUtil systemUtil =  new SystemUtil(); 
+    private SystemUtil systemUtil =  new SystemUtil();
+    private static HashMap<String, User> userMap = new HashMap<String,User>();
 
-    public User(){
+    private User(){
 
     }
 
@@ -20,5 +23,17 @@ public class User {
         this.email = email;
         this.password = systemUtil.hashPassword(password);
         this.type = type;
+    }
+
+    public User addHashMap(User user, String email){
+        return userMap.putIfAbsent(email,user);
+    }
+
+    public static void deserialize(){
+
+    }
+
+    public static void serizable(){
+
     }
 }

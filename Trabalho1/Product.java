@@ -15,7 +15,7 @@ public class Product implements Serializable{
     protected float price;
     protected int numberOfThisProductsInInventory;
     private String category;
-    private int numberOfProducts = 0;
+    private static int numberOfProducts = 0;
     protected ArrayList<Product> products = new ArrayList<Product>();
 
     public Product(){
