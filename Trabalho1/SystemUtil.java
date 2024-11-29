@@ -28,7 +28,7 @@ public class SystemUtil {
         random.nextBytes(salt);
         try {
             KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
-            SecretKeyFactory factory = SecretKeyFactory.getInstance(password);
+            SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
             byte[] hash = factory.generateSecret(spec).getEncoded();
             
             StringBuilder hexString = new StringBuilder();
@@ -38,9 +38,8 @@ public class SystemUtil {
             String hashed = hexString.toString();
             return hashed;
         } catch (Exception e) {
-            // TODO: handle exception
-            e.printStackTrace();
-            return " ";
+            return e.toString();
         }
+        
     }
 }
