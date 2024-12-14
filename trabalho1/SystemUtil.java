@@ -38,15 +38,6 @@ public class SystemUtil {
         return hash;    
     }
 
-    private static String byteToHex(byte[] hash){      
-        StringBuilder hexString = new StringBuilder();
-        for(byte b:hash){
-            hexString.append(String.format("%02X", 0XFF & b));
-        }
-        String hashed = hexString.toString();
-        return hashed;
-    }
-
     public static String setDate(){
         Date x = new Date();
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
