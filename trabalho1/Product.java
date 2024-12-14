@@ -41,10 +41,10 @@ public class Product implements Serializable {
     }
 
     public boolean verifyProductInventory(){
-        if(totalInInventory <= 0){
-            return false;
+        if(totalInInventory > 0){
+            return true;
         }
-        return true;
+        return false;
     }
 
     public void display(){

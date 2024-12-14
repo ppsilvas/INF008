@@ -1,14 +1,19 @@
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Scanner;
+import java.util.TreeMap;
 
 public class UserUI {
+    static HashMap<String, User> userMap = new HashMap<>();
+    static ArrayList<Product> productList = new ArrayList<>();
+    static TreeMap<Float, Order> orderMap = new TreeMap<>();
+    static IO io = new IO();
     public static void login() throws ClassNotFoundException, IOException, InvalidKeySpecException, NoSuchAlgorithmException{
-        User.deserialize();
-        Product.deserialize();
-        Order.deserialize();
+        io.loadData(userMap, productList, orderMap);
         Scanner scanner = new Scanner(System.in);
         SystemUtil.clearDisplay();
         System.out.println("Login");
@@ -75,6 +80,7 @@ public class UserUI {
                         case 3:
                             SystemUtil.clearDisplay();
                             ShoppingCart.finishOrder(costumer.id);
+                            scanner.nextLine();
                             repeat2 = false;
                                 break;
                         case 0:

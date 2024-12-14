@@ -20,6 +20,11 @@ public class ShoppingCart {
     }
 
     public static void finishOrder(int costumerId){
+        if(shoppingCart.isEmpty()){
+            System.out.println("Your cart is empty. Can't process a order.");
+            System.out.println("Press ENTER to continue...");
+            return;
+        }
         Order order = new Order(costumerId, shoppingCart, total);
         for(Product currentProduct: shoppingCart){
             Product.productBought(currentProduct.id);
