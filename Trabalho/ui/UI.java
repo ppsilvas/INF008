@@ -78,18 +78,16 @@ public class UI {
     @SuppressWarnings("unchecked")
     private void loadData(){
         Object[] data = dataIO.deserialize();
-        Object[] staticData = dataIO.staticDeserialize();
         users = (HashMap<String, User>) data[0];
         products = (ArrayList<Product>) data[1];
         orders = (TreeMap<Float, Order>) data[2];
-        User.setNumberOfUsers((Integer)staticData[0]);
-        Product.setNumberOfProducts((Integer)staticData[1]);
-        Order.setNumberOfOrders((Integer)staticData[2]);
+        User.setNumberOfUsers((Integer) data[3]);
+        Product.setNumberOfProducts((Integer) data[4]);
+        Order.setNumberOfOrders((Integer) data[5]);
     }
 
     private void saveData(){
-        dataIO.serealize(users, products, orders);
-        dataIO.staticSerialize(User.getNumberOfUsers(), Product.getNumberOfProducts(), Order.getNumberOfOrders());
+        dataIO.serealize(users, products, orders,User.getNumberOfUsers(), Product.getNumberOfProducts(), Order.getNumberOfOrders());
     }
 
     private void checkUsers(){
