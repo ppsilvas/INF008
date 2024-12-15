@@ -2,7 +2,10 @@ package Trabalho.model;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.TreeMap;
+
+import Trabalho.SystemUtil.SetDate;
 
 public class Order implements Serializable{
     private static int numberOfOrders = 0;
@@ -13,7 +16,7 @@ public class Order implements Serializable{
 
     public Order(HashMap<Product, Integer> productList, float total){
         this.id = numberOfOrders++;
-        this.date = Trabalho.SystemUtil.date.handleDate();
+        this.date = SetDate.handleDate();
         this.productList = new HashMap<>(productList);
         this.total = total;
     }
@@ -42,6 +45,14 @@ public class Order implements Serializable{
     public static void setNumberOfOrders(int number){
         numberOfOrders = number;
     }
+
+    public void displayItems(){
+        for(Map.Entry<Product, Integer> entry: productList.entrySet()){
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            System.out.println(product.getName()+" "+quantity);
+        }
+    } 
 
     public static Order mostExpensive(TreeMap<Float, Order> orders){
         float index = orders.lastKey();
