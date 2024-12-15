@@ -2,6 +2,7 @@ package Trabalho.ui;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
@@ -15,8 +16,9 @@ public class AdministratorUI {
             System.out.println("[2]-Create new product");
             System.out.println("[3]-Lowest product in invertory-Report");
             System.out.println("[4]-Most expensive order-Report");
-            // System.out.println("[5]-Show Inventory");
-            // System.out.println("[6]-Show Users");
+            System.out.println("[5]-Show Inventory");
+            System.out.println("[6]-Show Users");
+            System.out.println("[7]-Show Orders");
             System.out.println("[0]-Exit");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -32,6 +34,15 @@ public class AdministratorUI {
                     break;
                 case 4:
                     mostExpensiveOrder(orders);
+                    break;
+                case 5:
+                    showStock(products);
+                    break;
+                case 6:
+                    showUsers(users);
+                    break;
+                case 7:
+                    showOrders(orders);
                     break;
                 case 0:
                     System.out.println("Exiting administrator menu...");
@@ -108,7 +119,29 @@ public class AdministratorUI {
         if(orders.isEmpty()){
             System.out.println("No Order made");
         }else{
-            Order.mostExpensive(orders);
+            Order order = Order.mostExpensive(orders);
+            HashMap<Product,Integer> items = order.getItems();
+            System.out.println("#"+order.getId()+"-"+order.getDate()+"-"+order.getTotal()+"\nProduct List"+items);
+        }
+    }
+
+    private void showUsers(HashMap<String, User>users){
+        for(Map.Entry<String,User> entry: users.entrySet()){
+            User user = entry.getValue();
+            System.out.println("["+user.getId()+"]-"+user.getName()+"\nEmail: "+user.getEmail());
+        }
+    }
+
+    private void showStock(ArrayList<Product> products){
+        for(Product product: products){
+            product.display();
+        }
+    }
+
+    private void showOrders(TreeMap<Float, Order> orders){
+        for(Map.Entry<Float,Order> entry: orders.entrySet()){
+            Order order = entry.getValue();
+            System.out.println("["+order.getId()+"]-"+order.getItems()+"\nTotal: "+order.getTotal());
         }
     }
 }
