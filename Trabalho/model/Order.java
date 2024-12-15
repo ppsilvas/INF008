@@ -50,7 +50,7 @@ public class Order implements Serializable{
         for(Map.Entry<Product, Integer> entry: productList.entrySet()){
             Product product = entry.getKey();
             int quantity = entry.getValue();
-            System.out.println(product.getName()+" "+quantity);
+            System.out.println(product.getName()+"-Qty:"+quantity);
         }
     } 
 

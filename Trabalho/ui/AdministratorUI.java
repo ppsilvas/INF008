@@ -10,10 +10,10 @@ import Trabalho.SystemUtil.Clear;
 import Trabalho.model.*;
 
 public class AdministratorUI {
-    public void run(Scanner scanner, HashMap<String, User> users, TreeMap<Float,Order> orders, ArrayList<Product> products){
+    public void run(Scanner scanner, HashMap<String, User> users, TreeMap<Float,Order> orders, ArrayList<Product> products, Administrator admin){
         while(true){
             Clear.clearDisplay();
-            System.out.println("Administrator Interface");
+            System.out.println("Hello, "+ admin.getName());
             System.out.println("\n[1]-Create new user");
             System.out.println("[2]-Create new product");
             System.out.println("[3]-Lowest product in invertory-Report");
@@ -82,31 +82,26 @@ public class AdministratorUI {
             String name = scanner.nextLine();
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
-            System.out.print("Password: ");
-            String password = scanner.nextLine();
-            if(type == 1){
-                System.out.print("Adress: ");
-                String adress = scanner.nextLine();
-                Costumer costumer = new Costumer(name, email, password, adress);
-                User response = users.putIfAbsent(email,(Costumer)costumer);
-                if(response == null){
-                    return;
-                }else{
-                    System.out.println(email+" is already being used");
-                    scanner.nextLine();
-                }
-            }else if(type == 2){
-                Administrator administrator = new Administrator(name, email, password);
-                User response = users.putIfAbsent(email,(Administrator)administrator);
-                if(response == null){
-                    return;
-                }else{
-                    System.out.println(email+" is already being used");
-                    scanner.nextLine();
-                }
-            }else{
-                System.out.println("Invalid Option! Try again");
+            if(checkEmail(email, users)){
+                System.out.println(email+" is already being used");
                 scanner.nextLine();
+            }else{
+                System.out.print("Password: ");
+                String password = scanner.nextLine();
+                if(type == 1){
+                    System.out.print("Adress: ");
+                    String adress = scanner.nextLine();
+                    Costumer costumer = new Costumer(name, email, password, adress);
+                    users.putIfAbsent(email,(Costumer)costumer);
+                    break;
+                }else if(type == 2){
+                    Administrator administrator = new Administrator(name, email, password);
+                    users.putIfAbsent(email,(Administrator)administrator);
+                    break;
+                }else{
+                    System.out.println("Invalid Option! Try again");
+                    scanner.nextLine();
+                }
             }
         }
     }
@@ -172,5 +167,9 @@ public class AdministratorUI {
             order.displayItems();
             System.out.println("Total: "+total);
         }
+    }
+
+    private boolean checkEmail(String email, HashMap<String, User> users){
+        return users.containsKey(email);
     }
 }

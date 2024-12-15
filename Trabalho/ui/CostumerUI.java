@@ -11,8 +11,8 @@ public class CostumerUI {
     public void run(Scanner scanner, ArrayList<Product> products, TreeMap<Float,Order>orders, Costumer costumer){
         while(true){
             Clear.clearDisplay();
-            System.out.println("Costumer Interface");
-            System.out.println("[1]-Start new order");
+            System.out.println("Hello, "+costumer.getName());
+            System.out.println("\n[1]-Start new order");
             System.out.println("[2]-Show Historic");
             System.out.println("[0]-Exit");
             int choice = scanner.nextInt();
@@ -48,9 +48,15 @@ public class CostumerUI {
                 case 1->{
                     while (true) {
                         Clear.clearDisplay();
+                        if(products.isEmpty()){
+                            System.out.println("No product in stock.");
+                            scanner.nextLine();
+                            break;
+                        }
                         for(Product product: products){
                             product.display();
                         }
+                        System.out.print("Product ID:");
                         int index = scanner.nextInt();
                         scanner.nextLine();
                         if(products.get(index).getStock()<=0){
@@ -124,6 +130,10 @@ public class CostumerUI {
     }
 
     private void emptyShoppingCart(ShoppingCart shoppingCart){
+        if(shoppingCart.getItems().isEmpty()){
+            System.out.println("Cart is already empty.");
+            return;
+        }
         shoppingCart.emptyCart();
     }
 

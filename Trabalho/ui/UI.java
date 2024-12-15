@@ -8,15 +8,23 @@ import java.util.TreeMap;
 import Trabalho.model.User;
 import Trabalho.model.Product;
 import Trabalho.SystemUtil.Clear;
+import Trabalho.io.dataIO;
 import Trabalho.model.Administrator;
 import Trabalho.model.Costumer;
 import Trabalho.model.Order;
 
 public class UI {
+    private static HashMap<String, User> users = new HashMap<String, User>();
+    private static ArrayList<Product> products = new ArrayList<Product>();
+    private static TreeMap<Float,Order> orders = new TreeMap<Float, Order>();
 
-    public void run(HashMap<String, User> users, ArrayList<Product> products, TreeMap<Float,Order> orders){
+    public void run(){
+        Scanner scanner = new Scanner(System.in);
+        loadData();
+        System.out.println("Press any Key...");
+        scanner.nextLine();
+        checkUsers();
         while(true){
-            Scanner scanner = new Scanner(System.in);
             Clear.clearDisplay();
             System.out.println("E-commerce INF008");
             System.out.println("\n[1]-Login");
@@ -25,8 +33,9 @@ public class UI {
             int choice = scanner.nextInt();
             scanner.nextLine();
             if(choice == 1){
-                login(scanner, users, products, orders);
+                login(scanner);
             }else{
+                saveData();
                 System.out.println("Leaving System ...");
                 scanner.close();
                 return ;
@@ -34,7 +43,7 @@ public class UI {
         }
     }
 
-    private void login(Scanner scanner, HashMap<String, User> users, ArrayList<Product> products, TreeMap<Float,Order> orders){
+    private void login(Scanner scanner){
         while (true) {
             Clear.clearDisplay();
             System.out.print("Email:");
@@ -47,7 +56,7 @@ public class UI {
             if(user != null && user.authenticate(email, password)){
                 if(user instanceof Administrator){
                     AdministratorUI adminUi = new AdministratorUI();
-                    adminUi.run(scanner, users, orders, products);
+                    adminUi.run(scanner, users, orders, products,(Administrator)user);
                     return;
                 }else if(user instanceof Costumer){
                     CostumerUI costUI = new CostumerUI();
@@ -64,5 +73,33 @@ public class UI {
                 scanner.nextLine();
             }
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadData(){
+        Object[] data = dataIO.deserialize();
+        Object[] staticData = dataIO.staticDeserialize();
+        users = (HashMap<String, User>) data[0];
+        products = (ArrayList<Product>) data[1];
+        orders = (TreeMap<Float, Order>) data[2];
+        User.setNumberOfUsers((Integer)staticData[0]);
+        Product.setNumberOfProducts((Integer)staticData[1]);
+        Order.setNumberOfOrders((Integer)staticData[2]);
+    }
+
+    private void saveData(){
+        dataIO.serealize(users, products, orders);
+        dataIO.staticSerialize(User.getNumberOfUsers(), Product.getNumberOfProducts(), Order.getNumberOfOrders());
+    }
+
+    private void checkUsers(){
+        if(users.isEmpty()){
+            createAdmin();
+        }
+    }
+
+    private void createAdmin(){
+        Administrator a = new Administrator("admin", "admin", "admin");
+        users.put("admin", a);
     }
 }
