@@ -6,11 +6,13 @@ import java.util.Map;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import Trabalho.SystemUtil.Clear;
 import Trabalho.model.*;
 
 public class AdministratorUI {
     public void run(Scanner scanner, HashMap<String, User> users, TreeMap<Float,Order> orders, ArrayList<Product> products){
         while(true){
+            Clear.clearDisplay();
             System.out.println("Administrator Interface");
             System.out.println("\n[1]-Create new user");
             System.out.println("[2]-Create new product");
@@ -23,48 +25,65 @@ public class AdministratorUI {
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
-                case 1:
+                case 1->{
                     createUser(scanner, users);
-                    break;
-                case 2:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 2->{
                     createProduct(scanner, products);
-                    break;
-                case 3:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 3->{
                     lowestInStock(products);
-                    break;
-                case 4:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 4->{
                     mostExpensiveOrder(orders);
-                    break;
-                case 5:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 5->{
                     showStock(products);
-                    break;
-                case 6:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 6->{
                     showUsers(users);
-                    break;
-                case 7:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 7->{
                     showOrders(orders);
-                    break;
-                case 0:
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 0->{
                     System.out.println("Exiting administrator menu...");
                     return ;
-                default:
+                }
+                default->{
                     System.out.println("Invalid option. Try again.");
-                    break;
+                    scanner.nextLine();
+                }
             }
         }
     }
 
     private void createUser(Scanner scanner, HashMap<String, User> users){
         while(true){
+            Clear.clearDisplay();
+            System.out.print("Type:\n[1]-Costumer\n[2]-Administrator\nSelect the type: ");
+            int type = scanner.nextInt();
+            scanner.nextLine();
             System.out.print("Name: ");
             String name = scanner.nextLine();
             System.out.print("E-mail: ");
             String email = scanner.nextLine();
             System.out.print("Password: ");
             String password = scanner.nextLine();
-            System.out.print("Type:\n[1]-Costumer\n[2]-Administrator\nSelect the type: ");
-            int type = scanner.nextInt();
-            scanner.nextLine();
             if(type == 1){
                 System.out.print("Adress: ");
                 String adress = scanner.nextLine();
@@ -74,6 +93,7 @@ public class AdministratorUI {
                     return;
                 }else{
                     System.out.println(email+" is already being used");
+                    scanner.nextLine();
                 }
             }else if(type == 2){
                 Administrator administrator = new Administrator(name, email, password);
@@ -82,14 +102,17 @@ public class AdministratorUI {
                     return;
                 }else{
                     System.out.println(email+" is already being used");
+                    scanner.nextLine();
                 }
             }else{
                 System.out.println("Invalid Option! Try again");
+                scanner.nextLine();
             }
         }
     }
 
     private void createProduct(Scanner scanner, ArrayList<Product> products){
+        Clear.clearDisplay();
         System.out.print("Name: ");
         String name = scanner.nextLine();
         System.out.print("Description: ");
@@ -107,6 +130,7 @@ public class AdministratorUI {
     }
 
     private void lowestInStock(ArrayList<Product> products){
+        Clear.clearDisplay();
         if(products.isEmpty()){
             System.out.println("Inventory is empty.");
         }else{
@@ -116,12 +140,14 @@ public class AdministratorUI {
     }
 
     private void mostExpensiveOrder(TreeMap<Float,Order> orders){
+        Clear.clearDisplay();
         if(orders.isEmpty()){
             System.out.println("No Order made");
         }else{
             Order order = Order.mostExpensive(orders);
-            HashMap<Product,Integer> items = order.getItems();
-            System.out.println("#"+order.getId()+"-"+order.getDate()+"-"+order.getTotal()+"\nProduct List"+items);
+            System.out.println("#"+order.getId()+"-"+order.getDate()+"-"+order.getTotal());
+            System.out.println("Product List:");
+            order.displayItems();
         }
     }
 
@@ -134,14 +160,17 @@ public class AdministratorUI {
 
     private void showStock(ArrayList<Product> products){
         for(Product product: products){
-            product.display();
+            System.out.println("["+product.getId()+"]-"+product.getName()+"\nStock: "+product.getStock()+"\nPrice: "+product.getPrice());
         }
     }
 
     private void showOrders(TreeMap<Float, Order> orders){
         for(Map.Entry<Float,Order> entry: orders.entrySet()){
             Order order = entry.getValue();
-            System.out.println("["+order.getId()+"]-"+order.getItems()+"\nTotal: "+order.getTotal());
+            float total = entry.getKey();
+            System.out.println("Order #"+order.getId());
+            order.displayItems();
+            System.out.println("Total: "+total);
         }
     }
 }

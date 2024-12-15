@@ -4,33 +4,50 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.TreeMap;
 
+import Trabalho.SystemUtil.Clear;
 import Trabalho.model.*;
 
 public class CostumerUI {
     public void run(Scanner scanner, ArrayList<Product> products, TreeMap<Float,Order>orders, Costumer costumer){
-        System.out.println("Costumer Interface");
-        System.out.println("[1]-Start new order");
-        System.out.println("[0]-Exit");
-        int choice = scanner.nextInt();
-        scanner.nextLine();
-        if(choice == 1) startNewOrder(scanner, products, orders, costumer);
-        return ;
+        while(true){
+            Clear.clearDisplay();
+            System.out.println("Costumer Interface");
+            System.out.println("[1]-Start new order");
+            System.out.println("[2]-Show Historic");
+            System.out.println("[0]-Exit");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+            switch (choice) {
+                case 1->startNewOrder(scanner, products, orders, costumer);
+                case 2->{
+                    showOrderHistoric(costumer);
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 0->{
+                    System.out.println("Logoff ...");
+                    return;
+                }
+                default-> System.out.print("Invalid option. Try again");
+            }
+        }
     }
 
     private void startNewOrder(Scanner scanner, ArrayList<Product> products,TreeMap<Float,Order>orders,Costumer costumer){
         ShoppingCart shoppingCart = new ShoppingCart();
         while(true){
+            Clear.clearDisplay();
             System.out.println("[1]-Add item in cart");
             System.out.println("[2]-Shopping cart view");
             System.out.println("[3]-Finish order");
             System.out.println("[4]-Empty shopping cart");
-            System.out.println("[5]-Show Order Historic");
-            System.out.println("[0]-Exit");
+            System.out.println("[0]-Return");
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
                 case 1->{
                     while (true) {
+                        Clear.clearDisplay();
                         for(Product product: products){
                             product.display();
                         }
@@ -38,12 +55,14 @@ public class CostumerUI {
                         scanner.nextLine();
                         if(products.get(index).getStock()<=0){
                             System.out.println(products.get(index).getName()+" is out of stock.");
+                            scanner.nextLine();
                         }else{
                             System.out.print("Quantity:");
                             int quantity = scanner.nextInt();
                             scanner.nextLine();
                             if(quantity>products.get(index).getStock()){
                                 System.out.println("Theres is only "+products.get(index).getStock()+" "+products.get(index).getName()+" in the stock.");
+                                scanner.nextLine();
                             }else{
                                 addInCart(shoppingCart, products.get(index), quantity);
                             }
@@ -56,12 +75,22 @@ public class CostumerUI {
                         }
                     }
                 }
-                case 2->showShoppingCart(shoppingCart);
-                case 3->finishOrder(shoppingCart, orders, costumer);
-                case 4->emptyShoppingCart(shoppingCart);
-                case 5->showOrderHistoric(costumer);
+                case 2->{
+                    showShoppingCart(shoppingCart);
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 3->{
+                    finishOrder(shoppingCart, orders, costumer);
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
+                case 4->{
+                    emptyShoppingCart(shoppingCart);
+                    System.out.println("Press ENTER to continue");
+                    scanner.nextLine();
+                }
                 case 0->{
-                    System.out.println("Exiting costumer Menu");
                     return;
                 }
                 default->{
@@ -84,11 +113,10 @@ public class CostumerUI {
             System.out.println("Cart is empty. Select an item.");
             return;
         }
-        System.out.println("Finishing order. Cart content: "+shoppingCart.getItems());
+        showShoppingCart(shoppingCart);
         shoppingCart.updateStock();
         float total = shoppingCart.calculateTotal();
         Order order = new Order(shoppingCart.getItems(), total);
-        order.getItems();
         orders.put(total, order);
         costumer.orderAdd(order);
         System.out.println("Order finished!");
@@ -101,7 +129,9 @@ public class CostumerUI {
 
     private void showOrderHistoric(Costumer costumer){
         for(Order order: costumer.getHistoric()){
-            System.out.println("#"+order.getId()+"-"+order.getItems()+"\nTotal: "+order.getTotal());
+            System.out.println("Order #"+order.getId());
+            order.displayItems();
+            System.out.println("Total: "+order.getTotal());
         }
     }
 }
