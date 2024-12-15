@@ -26,7 +26,6 @@ public class dataIO {
             System.out.println("Saved with success");
         } catch (IOException e) {
             System.out.println("File Not Foudend");
-            // e.printStackTrace();
         }
     }
 
@@ -43,7 +42,7 @@ public class dataIO {
             System.out.println("Loaded with success");
             return new Object[]{users,products,orders};
         } catch (IOException e) {
-            System.out.println("File Not Foudend");
+            System.out.println("File Not Foudend or Empty");
         } catch (ClassNotFoundException e) {
             System.out.println("Class Not Found");
         }
@@ -65,7 +64,6 @@ public class dataIO {
             fos.close();
             System.out.println("Saved with success");
         } catch (IOException e) {
-            // TODO: handle exception
             System.out.println("File Not Foudend");
         }
     }
@@ -83,7 +81,7 @@ public class dataIO {
                 numberOfUser,numberOfProduct,numberOfOrder
             };
         }catch(IOException e){
-            System.out.println("File Not Foudend");
+            System.out.println("File Not Foudend or Empty");
         }
         return new Object[]{
             0,0,0
