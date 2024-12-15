@@ -53,4 +53,40 @@ public class dataIO {
             new TreeMap<Float, Order>()
         };
     }
+
+    public static void staticSerialize(int numberOfUser, int numberOfProduct, int numberOfOrder){
+        try {
+            FileOutputStream fos = new FileOutputStream("./Trabalho/io/static.dat");
+            ObjectOutputStream oos = new ObjectOutputStream(fos);
+            oos.writeInt(numberOfUser);
+            oos.writeInt(numberOfProduct);
+            oos.writeInt(numberOfOrder);
+            oos.close();
+            fos.close();
+            System.out.println("Saved with success");
+        } catch (IOException e) {
+            // TODO: handle exception
+            System.out.println("File Not Foudend");
+        }
+    }
+
+    public static Object[] staticDeserialize(){
+        try{
+            FileInputStream fis = new FileInputStream("./Trabalho/io/static.dat");
+            ObjectInputStream ois = new ObjectInputStream(fis);
+            int numberOfUser = ois.readInt();
+            int numberOfProduct = ois.readInt();
+            int numberOfOrder = ois.readInt();
+            ois.close();
+            fis.close();
+            return new Object[]{
+                numberOfUser,numberOfProduct,numberOfOrder
+            };
+        }catch(IOException e){
+            System.out.println("File Not Foudend");
+        }
+        return new Object[]{
+            0,0,0
+        };
+    }
 }
