@@ -1,6 +1,5 @@
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Scanner;
 
 public class Administrator extends User{
     public Administrator() throws InvalidKeySpecException, NoSuchAlgorithmException{

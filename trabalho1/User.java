@@ -8,9 +8,7 @@ import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.Iterator;
 
 public class User implements Serializable{
     protected int id;
@@ -45,7 +43,7 @@ public class User implements Serializable{
 
     public static void display(){
        for(User user: userMap.values()){
-            System.out.println("["+user.id+"]-Name:"+user.name);
+            System.out.println("["+user.id+"]-Name:"+user.name+"-Email"+user.email);
        }
 
     }
