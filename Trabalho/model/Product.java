@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 
 public class Product implements Serializable{
-    private static int numberOfProduct = 0;
+    private static int numberOfProducts = 0;
     private int id;
     private String name;
     private String description;
@@ -17,7 +17,7 @@ public class Product implements Serializable{
     }
 
     public Product(String name, String description, float price, int stockQuantity, String category){
-        this.id = numberOfProduct++;
+        this.id = numberOfProducts++;
         this.name = name;
         this.description = description;
         this.price = price;
@@ -35,6 +35,22 @@ public class Product implements Serializable{
 
     public float getPrice(){
         return price;
+    }
+
+    public int getStock(){
+        return stockQuantity;
+    }
+
+    public static int getNumberOfProducts(){
+        return numberOfProducts;
+    }
+
+    public static void setNumberOfProducts(int number){
+        numberOfProducts = number;
+    }
+
+    public void decreaseStock(int quantity){
+        stockQuantity-=quantity;
     }
 
     public static void lowestInStock(Product lowestProduct,ArrayList<Product> products){

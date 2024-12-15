@@ -19,4 +19,8 @@ public class Costumer extends User {
     public String getAdress(){
         return adress;
     }
+
+    public ArrayList<Order> getHistoric(){
+        return orderHistoric;
+    }
 }

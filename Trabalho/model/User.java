@@ -6,7 +6,7 @@ import java.security.MessageDigest;
 import Trabalho.SystemUtil.hash;
 
 public class User implements Serializable{
-    private static int numberOfuser = 0;
+    private static int numberOfUsers = 0;
     private int id;
     private String fullName;
     private String email;
@@ -15,6 +15,14 @@ public class User implements Serializable{
     
     private User(){
 
+    }
+
+    public User(String fullName, String email, String password){
+        this.id = numberOfUsers++;
+        this.fullName = fullName;
+        this.email = email;
+        this.salt = hash.saltGenerator();
+        this.password = hash.hashPassword(password, salt);
     }
 
     public int getId(){
@@ -29,12 +37,12 @@ public class User implements Serializable{
         return email;
     }
 
-    public User(String fullName, String email, String password){
-        this.id = numberOfuser++;
-        this.fullName = fullName;
-        this.email = email;
-        this.salt = hash.saltGenerator();
-        this.password = hash.hashPassword(password, salt);
+    public static int getNumberOfUsers(){
+        return numberOfUsers;
+    }
+
+    public static void setNumberOfUsers(int number){
+        numberOfUsers = number;
     }
 
     public boolean authenticate(String email, String password){

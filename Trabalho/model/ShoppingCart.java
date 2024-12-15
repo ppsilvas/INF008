@@ -44,4 +44,12 @@ public class ShoppingCart {
         }
         return total;
     }
+
+    public void updateStock(){
+        for (Map.Entry<Product, Integer> entry : items.entrySet()){
+            Product product = entry.getKey();
+            int quantity = entry.getValue();
+            product.decreaseStock(quantity);
+        }
+    }
 }
