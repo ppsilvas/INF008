@@ -13,17 +13,11 @@ public class CostumerUI {
             Clear.clearDisplay();
             System.out.println("Hello, "+costumer.getName());
             System.out.println("\n[1]-Start new order");
-            System.out.println("[2]-Show Historic");
             System.out.println("[0]-Exit");
             int choice = scanner.nextInt();
             scanner.nextLine();
             switch (choice) {
                 case 1->startNewOrder(scanner, products, orders, costumer);
-                case 2->{
-                    showOrderHistoric(costumer);
-                    System.out.println("Press ENTER to continue");
-                    scanner.nextLine();
-                }
                 case 0->{
                     System.out.println("Logoff ...");
                     return;
@@ -40,7 +34,6 @@ public class CostumerUI {
             System.out.println("[1]-Add item in cart");
             System.out.println("[2]-Shopping cart view");
             System.out.println("[3]-Finish order");
-            System.out.println("[4]-Empty shopping cart");
             System.out.println("[0]-Return");
             int choice = scanner.nextInt();
             scanner.nextLine();
@@ -91,11 +84,6 @@ public class CostumerUI {
                     System.out.println("Press ENTER to continue");
                     scanner.nextLine();
                 }
-                case 4->{
-                    emptyShoppingCart(shoppingCart);
-                    System.out.println("Press ENTER to continue");
-                    scanner.nextLine();
-                }
                 case 0->{
                     return;
                 }
@@ -135,13 +123,5 @@ public class CostumerUI {
             return;
         }
         shoppingCart.emptyCart();
-    }
-
-    private void showOrderHistoric(Costumer costumer){
-        for(Order order: costumer.getHistoric()){
-            System.out.println("Order #"+order.getId());
-            order.displayItems();
-            System.out.println("Total: "+order.getTotal());
-        }
     }
 }
