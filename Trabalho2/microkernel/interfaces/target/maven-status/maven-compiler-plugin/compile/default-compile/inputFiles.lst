@@ -1,6 +1,6 @@
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IAuthenticationController.java
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IPlugin.java
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IPluginController.java
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/ICore.java
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IIOController.java
-/home/pedro/Estudos/IFBA/Semestre3/POO/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IUIController.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IIOController.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IUIController.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IAuthenticationController.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/ICore.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IPluginController.java
+/home/pedro/Estudos/IFBA/Semestre3/POO/INF008/Trabalho2/microkernel/interfaces/src/main/java/br/edu/ifba/inf008/interfaces/IPlugin.java
