@@ -2,8 +2,8 @@ package br.edu.ifba.inf008.interfaces;
 
 import java.util.List;
 
-import br.edu.ifba.inf008.shell.models.Book;
-import br.edu.ifba.inf008.shell.models.User;
+import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.User;
 
 public interface ILIbraryController {
     void newUser(String name);
@@ -15,3 +15,5 @@ public interface ILIbraryController {
     List<Book> getAvailableBooks();
     List<Book> getBorrowedBooks();
 }
+
+

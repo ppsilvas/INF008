@@ -1,4 +1,4 @@
-package br.edu.ifba.inf008.shell.models;
+package br.edu.ifba.inf008.models;
 
 import java.io.Serializable;
 

@@ -1,15 +1,13 @@
 package br.edu.ifba.inf008.shell;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
-import br.edu.ifba.inf008.interfaces.ILIbraryController;
-import br.edu.ifba.inf008.shell.models.Book;
-import br.edu.ifba.inf008.shell.models.Loan;
-import br.edu.ifba.inf008.shell.models.User;
+import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.Loan;
+import br.edu.ifba.inf008.models.User;
 
-public class LibraryController implements ILIbraryController {
+public class LibraryController {
     List<Book> books;
     List<User> users;
     List<Loan> loans;
@@ -46,16 +44,7 @@ public class LibraryController implements ILIbraryController {
     }
 
     public boolean borrowBook(int userId, int bookIsbn){
-        // Iterator<Book> bookIterator = books.iterator();
-        // Iterator<User> userterator = users.iterator();
-
-        // if(book.getIsAvailable()){
-        //     if(user.borrowBook(book)){
-        //         Loan loan = new Loan(user, book);
-        //         loans.add(loan);
-        //         return true;
-        //     }
-        // }
+        
         return false;
     }
 
