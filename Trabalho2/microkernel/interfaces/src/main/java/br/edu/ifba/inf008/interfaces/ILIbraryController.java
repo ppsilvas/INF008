@@ -11,9 +11,10 @@ public interface ILIbraryController {
     boolean addUser(User user);
     boolean addBook(Book book);
     boolean borrowBook(int userId, int bookIsbn);
-    boolean returnBook(int userId, int bookIsbn);
+    boolean returnBook(int userId, int bookIsbn, int loanId);
     List<Book> getAvailableBooks();
     List<Book> getBorrowedBooks();
+    Book searchBook(String title);
 }
 
 
