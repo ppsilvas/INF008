@@ -32,7 +32,12 @@ public class Core extends ICore
         return pluginController;
     }
 
+    public ILibraryController getLibraryController(){
+        return libraryController;
+    }
+
     private IAuthenticationController authenticationController = new AuthenticationController();
     private IIOController ioController = new IOController();
     private IPluginController pluginController = new PluginController();
+    private ILibraryController libraryController = new LibraryController();
 }
