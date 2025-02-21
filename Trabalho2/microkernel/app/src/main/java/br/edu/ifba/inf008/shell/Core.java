@@ -9,14 +9,16 @@ public class Core extends ICore
     private Core() {}
 
     public static boolean init() {
-	if (instance != null) {
-	    System.out.println("Fatal error: core is already initialized!");
-	    System.exit(-1);
-	}
-
-	instance = new Core();
+        if (instance != null) {
+            System.out.println("Fatal error: core is already initialized!");
+            System.exit(-1);
+        }
+        persistanceTest.fillShelves();
+        persistanceTest.subscribeUsers();
+        persistanceTest.registerLoans();
+        instance = new Core();
         UIController.launch(UIController.class);
-
+        
         return true;
     }
     public IUIController getUIController() {
@@ -39,5 +41,6 @@ public class Core extends ICore
     private IAuthenticationController authenticationController = new AuthenticationController();
     private IIOController ioController = new IOController();
     private IPluginController pluginController = new PluginController();
-    private ILibraryController libraryController = new LibraryController();
+    private static ILibraryController libraryController = new LibraryController();
+    private static IPersistanceTest persistanceTest = new PersistanceTest(libraryController);
 }

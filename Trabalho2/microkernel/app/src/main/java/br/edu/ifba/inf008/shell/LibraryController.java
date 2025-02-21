@@ -16,13 +16,13 @@ public class LibraryController implements ILibraryController {
     public LibraryController(){
         this.library = loadData();
     }
-
+    @Override
     public void newUser(String name){
         User user = new User(name);
         addUser(user);
         saveData();
     }
-
+    @Override
     public void newBook(String title, String author, int realeaseYear, String genre){
         Book book = new Book(title, author, realeaseYear, genre);
         addBook(book);
@@ -44,7 +44,7 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
-
+    @Override
     public boolean borrowBook(int userId, int bookIsbn){
         Optional<Book> book = library.getBooks().stream().filter(b->b.getIsbn() == bookIsbn).findFirst();
         Optional<User> user = library.getUsers().stream().filter(u->u.getId() == userId).findFirst();
@@ -60,7 +60,7 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
-
+    @Override
     public boolean returnBook(int userId, int bookIsbn, int loanId){
         Optional<Book> book = library.getBooks().stream().filter(b->b.getIsbn() == bookIsbn).findFirst();
         Optional<User> user = library.getUsers().stream().filter(u->u.getId() == userId).findFirst();
@@ -76,7 +76,7 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
-
+    @Override
     public List<Book> getAvailableBooks(){
         ArrayList<Book> availableBooks = new ArrayList<>();
         for(Book book : library.getBooks()){
@@ -86,7 +86,7 @@ public class LibraryController implements ILibraryController {
         }
         return availableBooks;
     }
-
+    @Override
     public List<Book> getBorrowedBooks(){
         ArrayList<Book> borrowedBooks = new ArrayList<>();
         for(Book book: library.getBooks()){
@@ -96,7 +96,7 @@ public class LibraryController implements ILibraryController {
         }
         return borrowedBooks;
     }
-
+    @Override
     public Book searchBook(String title){
         Optional<Book> book = library.getBooks().stream().filter(b->b.getTitle().equals(title)).findFirst();
         if(!book.isPresent())
