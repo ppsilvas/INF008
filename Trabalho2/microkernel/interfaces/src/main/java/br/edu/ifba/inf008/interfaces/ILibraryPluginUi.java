@@ -9,5 +9,6 @@ public interface ILibraryPluginUi extends IPlugin{
     public abstract void showAddBookMenu();
     public abstract void showBorrowBookMenu();
     public abstract void showReturnBookMenu();
+    public abstract void showLoanReport();
     public abstract void saveLibraryData(Stage stage);
 }

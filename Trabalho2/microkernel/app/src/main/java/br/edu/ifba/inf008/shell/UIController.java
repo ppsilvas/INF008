@@ -56,6 +56,7 @@ public class UIController extends Application implements IUIController
         primaryStage.close();
 
         Core.getInstance().getPluginController().init();
+        Core.getInstance().getPluginController().executePlugin("LibraryUi");
     }
 
     public MenuItem createMenuItem(String menuText, String menuItemText) {

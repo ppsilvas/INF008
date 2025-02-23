@@ -14,6 +14,7 @@
         <module>app</module>
         <module>plugins/myplugin</module>
         <module>plugins/libraryui</module>
+        <module>plugins/loanreport</module>
     </modules>
 
     <properties>

@@ -41,18 +41,20 @@ public class LibraryUi implements ILibraryPluginUi{
         Button addBookButton = new Button("Adicionar Livro");
         Button borrowBookButton = new Button("Emprestar Livro");
         Button returnBookButton = new Button("Devolver Livro");
+        Button loanReportButton = new Button("Livros Emprestados");
         Button exitButton = new Button("Salvar e Sair");
 
         addUserButton.setOnAction(e -> showAddUserMenu());
         addBookButton.setOnAction(e -> showAddBookMenu());
         borrowBookButton.setOnAction(e -> showBorrowBookMenu());
         returnBookButton.setOnAction(e -> showReturnBookMenu());
+        loanReportButton.setOnAction(e -> showLoanReport());
         exitButton.setOnAction(e -> saveLibraryData(primaryStage));
 
-        VBox layout = new VBox(10, addUserButton, addBookButton, borrowBookButton, returnBookButton, exitButton);
+        VBox layout = new VBox(10, addUserButton, addBookButton, borrowBookButton, returnBookButton, loanReportButton, exitButton);
         layout.setPadding(new javafx.geometry.Insets(20));
 
-        Scene scene = new Scene(layout, 300, 250);
+        Scene scene = new Scene(layout, 300, 350);
         primaryStage.setScene(scene);
         primaryStage.show();
     }
@@ -251,6 +253,12 @@ public class LibraryUi implements ILibraryPluginUi{
         Scene scene = new Scene(layout, 300, 300);
         stage.setScene(scene);
         stage.show();
+    }
+
+    @Override
+    public void showLoanReport(){
+        String pluginName = "LoanReport";
+        ICore.getInstance().getPluginController().executePlugin(pluginName);
     }
 
     @Override

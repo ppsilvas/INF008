@@ -6,6 +6,7 @@ import br.edu.ifba.inf008.interfaces.IPlugin;
 import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.interfaces.ILibraryPluginUi;
+import br.edu.ifba.inf008.interfaces.ILoanReport;
 
 import java.io.File;
 import java.io.FilenameFilter;
@@ -13,11 +14,13 @@ import java.lang.reflect.Constructor;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class PluginController implements IPluginController
 {
     private List<PluginConfig> pluginconfig = new ArrayList<>();
+    private HashMap<String, Object> iPlugins = new HashMap<>();
 
     public boolean init() {
         configurePlugins();
@@ -47,9 +50,7 @@ public class PluginController implements IPluginController
                 Constructor<?> constructor = pluginClass.getDeclaredConstructor(plugin.getParametersType());
                 Object pluginInstance = constructor.newInstance(plugin.getParameters());
 
-                if(pluginInstance instanceof ILibraryPluginUi){
-                    ((ILibraryPluginUi) pluginInstance).init();
-                }
+                iPlugins.put(pluginName, pluginInstance);
             }
 
             return true;
@@ -57,6 +58,23 @@ public class PluginController implements IPluginController
             e.printStackTrace();
             System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
 
+            return false;
+        }
+    }
+
+    @Override
+    public boolean executePlugin(String pluginName){
+        Object plugin = iPlugins.get(pluginName);
+        if(plugin instanceof ILibraryPluginUi){
+            ((ILibraryPluginUi) plugin).init();
+            return true;
+        }else if(plugin instanceof ILoanReport){
+            ((ILoanReport) plugin).init();
+            return true;
+        }else if(plugin instanceof IPlugin){
+            ((IPlugin) plugin).init();
+            return true;
+        }else{
             return false;
         }
     }
@@ -90,5 +108,6 @@ public class PluginController implements IPluginController
     private void configurePlugins(){
         addPlugin("LibraryUi", new Class<?>[]{ILibraryController.class}, new Object[]{Core.getInstance().getLibraryController()});
         addPlugin("MyPlugin", null, null);
+        addPlugin("LoanReport", new Class<?>[]{ILibraryController.class}, new Object[]{Core.getInstance().getLibraryController()});
     }
 }
