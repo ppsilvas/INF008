@@ -5,3 +5,6 @@
 .vscode
 
 *.dat
+
+PersistenceTest.java
+PersistenceTest.class

@@ -11,11 +11,11 @@ public class Loan implements Serializable {
     private LocalDate loanDate;
     private LocalDate returDate;
 
-    public Loan(User user, Book book){
+    public Loan(User user, Book book, LocalDate loanDate){
         this.id = numberOfLoans++;
         this.user = user;
         this.book = book;
-        this.loanDate = LocalDate.now();
+        this.loanDate = loanDate;
         this.returDate = LocalDate.now().plusDays(14);
     }
 

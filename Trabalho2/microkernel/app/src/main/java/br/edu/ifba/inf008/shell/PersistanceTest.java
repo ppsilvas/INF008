@@ -1,5 +1,7 @@
 package br.edu.ifba.inf008.shell;
 
+import java.time.LocalDate;
+
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.interfaces.IPersistanceTest;
 
@@ -68,10 +70,10 @@ public class PersistanceTest implements IPersistanceTest{
     @Override
     public boolean registerLoans() {
         try {
-            boolean loan1 = libraryController.borrowBook(0, 0);
-            boolean loan2 = libraryController.borrowBook(1, 1);
-            boolean loan3 = libraryController.borrowBook(2, 1);
-            boolean loan4 = libraryController.borrowBook(2, 2);
+            boolean loan1 = libraryController.borrowBook(0, 0, LocalDate.now());
+            boolean loan2 = libraryController.borrowBook(1, 1,LocalDate.now());
+            boolean loan3 = libraryController.borrowBook(2, 1, LocalDate.now());
+            boolean loan4 = libraryController.borrowBook(2, 2, LocalDate.now());
             System.out.println(loan1 ? "Empréstimo 1 realizado com sucesso!" : "Empréstimo 1 falhou.");
             System.out.println(loan2 ? "Empréstimo 2 realizado com sucesso!" : "Empréstimo 2 falhou.");
             System.out.println(loan3 ? "Empréstimo 3 realizado com sucesso!" : "Empréstimo 3 falhou.");

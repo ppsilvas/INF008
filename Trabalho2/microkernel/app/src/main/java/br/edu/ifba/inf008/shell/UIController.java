@@ -53,6 +53,7 @@ public class UIController extends Application implements IUIController
 
         primaryStage.setScene(scene);
         primaryStage.show();
+        primaryStage.close();
 
         Core.getInstance().getPluginController().init();
     }

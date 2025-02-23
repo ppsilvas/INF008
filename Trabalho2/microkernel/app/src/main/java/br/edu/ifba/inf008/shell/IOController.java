@@ -5,14 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
+
 import br.edu.ifba.inf008.interfaces.IIOController;
+import br.edu.ifba.inf008.models.Book;
 import br.edu.ifba.inf008.models.Library;
+import br.edu.ifba.inf008.models.Loan;
+import br.edu.ifba.inf008.models.User;
 
 public class IOController implements IIOController
 {
     private static final String FILE_NAME = "libraryData.dat";
     @Override
-    public <T> boolean saveData(Library data, int numberOfBooks, int numberOfUsers, int numberOfLoans){
+    public <T> boolean saveData(ArrayList<Book>books,ArrayList<User>users,ArrayList<Loan>loans, int numberOfBooks, int numberOfUsers, int numberOfLoans){
         File file = new File(FILE_NAME);
         if(!file.exists()){
             System.out.println("File doesn't exist");
@@ -25,7 +30,9 @@ public class IOController implements IIOController
             }
         }
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
-            oos.writeObject(data);
+            oos.writeObject(books);
+            oos.writeObject(users);
+            oos.writeObject(loans);
             oos.writeInt(numberOfLoans);
             oos.writeInt(numberOfBooks);
             oos.writeInt(numberOfUsers);
@@ -52,13 +59,16 @@ public class IOController implements IIOController
         }
         
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            Library library = (Library) ios.readObject();
+            ArrayList<Book>books = (ArrayList<Book>) ios.readObject();
+            ArrayList<User>users = (ArrayList<User>) ios.readObject();;
+            ArrayList<Loan>loans = (ArrayList<Loan>) ios.readObject();;
             int numberOfLoans = ios.readInt();
             int numberOfBooks = ios.readInt();
             int numberOfUsers = ios.readInt();
-            System.out.println(library);
             return new Object[]{
-                library,
+                books,
+                users,
+                loans,
                 numberOfBooks,
                 numberOfLoans,
                 numberOfUsers
@@ -67,7 +77,9 @@ public class IOController implements IIOController
             e.printStackTrace();
             
             return new Object[]{
-                new Library(),
+                new ArrayList<Book>(),
+                new ArrayList<User>(),
+                new ArrayList<Loan>(),
                 0,
                 0,
                 0

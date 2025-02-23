@@ -2,20 +2,13 @@ package br.edu.ifba.inf008.models;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.List;
 
 public class Library implements Serializable {
-    private ArrayList<Book> books;
-    private ArrayList<User> users;
-    private ArrayList<Loan> loans;
+    public static ArrayList<Book> books = new ArrayList<Book>();
+    public static ArrayList<User> users = new ArrayList<User>();
+    public static ArrayList<Loan> loans = new ArrayList<Loan>();
 
     public Library(){}
-
-    public Library(ArrayList<Book> books, ArrayList<User> users, ArrayList<Loan> loans){
-        this.books = books;
-        this.users = users;
-        this.loans = loans;
-    }
 
     public ArrayList<Book> getBooks() {
         return books;

@@ -14,11 +14,11 @@ public class Core extends ICore
             System.exit(-1);
         }
         instance = new Core();
+        // persistanceTest.fillShelves();
+        // persistanceTest.subscribeUsers();
+        // persistanceTest.registerLoans();
         UIController.launch(UIController.class);
-        persistanceTest.fillShelves();
-        persistanceTest.subscribeUsers();
-        persistanceTest.registerLoans();
-        
+
         return true;
     }
     public IUIController getUIController() {
