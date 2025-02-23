@@ -10,6 +10,10 @@ public class User implements Serializable {
     private String name;
     private List<Book> borrewedBooks;
 
+    public User(){
+        
+    }
+
     public User(String name){
         this.id = numberOfUsers++;
         this.name = name;

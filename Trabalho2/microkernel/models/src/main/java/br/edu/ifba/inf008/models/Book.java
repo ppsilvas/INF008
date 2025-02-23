@@ -11,6 +11,10 @@ public class Book implements Serializable {
     private String genre;
     private boolean isAvailabe;
 
+    public Book(){
+        
+    }
+
     public Book(String title, String author, int realeaseYear, String genre){
         this.isbn = numberOfBooks++;
         this.title = title;

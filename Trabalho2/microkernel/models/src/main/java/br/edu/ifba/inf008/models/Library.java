@@ -5,37 +5,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Library implements Serializable {
-    private List<Book> books;
-    private List<User> users;
-    private List<Loan> loans;
+    private ArrayList<Book> books;
+    private ArrayList<User> users;
+    private ArrayList<Loan> loans;
 
-    public Library(){
-        this.books = new ArrayList<>();
-        this.loans = new ArrayList<>();
-        this.users = new ArrayList<>();
+    public Library(){}
+
+    public Library(ArrayList<Book> books, ArrayList<User> users, ArrayList<Loan> loans){
+        this.books = books;
+        this.users = users;
+        this.loans = loans;
     }
 
-    public List<Book> getBooks() {
+    public ArrayList<Book> getBooks() {
         return books;
     }
 
-    public List<Loan> getLoans() {
+    public ArrayList<Loan> getLoans() {
         return loans;
     }
 
-    public List<User> getUsers() {
+    public ArrayList<User> getUsers() {
         return users;
-    }
-
-    public void setBook(List<Book> books){
-        this.books = books;
-    }
-
-    public void setUser(List<User> users){
-        this.users = users;
-    }
-
-    public void setLoan(List<Loan> loans){
-        this.loans = loans;
     }
 }

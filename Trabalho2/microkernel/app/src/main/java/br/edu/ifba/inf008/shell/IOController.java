@@ -11,7 +11,8 @@ import br.edu.ifba.inf008.models.Library;
 public class IOController implements IIOController
 {
     private static final String FILE_NAME = "libraryData.dat";
-    public static <T> boolean saveData(Library data, int numberOfBooks, int numberOfUsers, int numberOfLoans){
+    @Override
+    public <T> boolean saveData(Library data, int numberOfBooks, int numberOfUsers, int numberOfLoans){
         File file = new File(FILE_NAME);
         if(!file.exists()){
             System.out.println("File doesn't exist");
@@ -34,11 +35,11 @@ public class IOController implements IIOController
             return false;
         }
     }
-    public static Object[] loadData(){
+    @Override
+    public Object[] loadData(){
         File file = new File(FILE_NAME);
         if(!file.exists()||file.length() == 0){
-            try {
-                file.delete();
+            try {   
                 return new Object[]{
                     new Library(),
                     0,
@@ -46,16 +47,16 @@ public class IOController implements IIOController
                     0
                 };
             } catch (Exception e) {
-                System.err.println("Unable to delete File");
                 e.printStackTrace();
             }
         }
         
         try (ObjectInputStream ios = new ObjectInputStream(new FileInputStream(FILE_NAME))) {
-            var library = (Library) ios.readObject();
-            var numberOfLoans = ios.readInt();
-            var numberOfBooks = ios.readInt();
-            var numberOfUsers = ios.readInt();
+            Library library = (Library) ios.readObject();
+            int numberOfLoans = ios.readInt();
+            int numberOfBooks = ios.readInt();
+            int numberOfUsers = ios.readInt();
+            System.out.println(library);
             return new Object[]{
                 library,
                 numberOfBooks,

@@ -12,6 +12,7 @@ public interface ILibraryController {
     public abstract List<Book> getAvailableBooks();
     public abstract List<Book> getBorrowedBooks();
     public abstract Book searchBook(String title);
+    public abstract void saveData();
 }
 
 

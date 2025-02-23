@@ -36,6 +36,7 @@ public class PersistanceTest implements IPersistanceTest{
                 System.out.println("Livros adicionados com sucesso!");
                 return true;
             }
+            libraryController.saveData();
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -56,6 +57,7 @@ public class PersistanceTest implements IPersistanceTest{
                 System.out.println("Usuários adicionados com sucesso!");
                 return true;
             }
+            libraryController.saveData();
             return false;
         } catch (Exception e) {
             e.printStackTrace();
@@ -77,6 +79,7 @@ public class PersistanceTest implements IPersistanceTest{
             if(!libraryController.getBorrowedBooks().isEmpty()){
                 return true;
             }
+            libraryController.saveData();
             return false;
         } catch (Exception e) {
             e.printStackTrace();

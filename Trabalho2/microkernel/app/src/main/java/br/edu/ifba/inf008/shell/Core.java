@@ -13,11 +13,11 @@ public class Core extends ICore
             System.out.println("Fatal error: core is already initialized!");
             System.exit(-1);
         }
+        instance = new Core();
+        UIController.launch(UIController.class);
         persistanceTest.fillShelves();
         persistanceTest.subscribeUsers();
         persistanceTest.registerLoans();
-        instance = new Core();
-        UIController.launch(UIController.class);
         
         return true;
     }
@@ -33,7 +33,6 @@ public class Core extends ICore
     public IPluginController getPluginController() {
         return pluginController;
     }
-
     public ILibraryController getLibraryController(){
         return libraryController;
     }
@@ -42,5 +41,5 @@ public class Core extends ICore
     private IIOController ioController = new IOController();
     private IPluginController pluginController = new PluginController();
     private static ILibraryController libraryController = new LibraryController();
-    private static IPersistanceTest persistanceTest = new PersistanceTest(libraryController);
+        private static IPersistanceTest persistanceTest = new PersistanceTest(libraryController);
 }
