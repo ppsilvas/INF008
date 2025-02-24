@@ -8,17 +8,7 @@ public class Library implements Serializable {
     public static ArrayList<User> users = new ArrayList<User>();
     public static ArrayList<Loan> loans = new ArrayList<Loan>();
 
-    public Library(){}
-
-    public ArrayList<Book> getBooks() {
-        return books;
-    }
-
-    public ArrayList<Loan> getLoans() {
-        return loans;
-    }
-
-    public ArrayList<User> getUsers() {
-        return users;
+    public Library(){
+        
     }
 }

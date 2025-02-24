@@ -18,12 +18,12 @@ public class LibraryUi implements ILibraryPluginUi{
     private Stage primaryStage;
 
     public LibraryUi(){
-        
+        this.libraryController = ICore.getInstance().getLibraryController();
     }
     
-    public LibraryUi(ILibraryController libraryController) {
-        this.libraryController = libraryController;
-    }
+    // public LibraryUi(ILibraryController libraryController) {
+    //     this.libraryController = libraryController;
+    // }
 
     @Override
     public boolean init() {
@@ -42,6 +42,7 @@ public class LibraryUi implements ILibraryPluginUi{
         Button borrowBookButton = new Button("Emprestar Livro");
         Button returnBookButton = new Button("Devolver Livro");
         Button loanReportButton = new Button("Livros Emprestados");
+        Button delayReporButton = new Button("Livros Atrasados");
         Button exitButton = new Button("Salvar e Sair");
 
         addUserButton.setOnAction(e -> showAddUserMenu());
@@ -49,9 +50,10 @@ public class LibraryUi implements ILibraryPluginUi{
         borrowBookButton.setOnAction(e -> showBorrowBookMenu());
         returnBookButton.setOnAction(e -> showReturnBookMenu());
         loanReportButton.setOnAction(e -> showLoanReport());
+        delayReporButton.setOnAction(e -> showDelayReport());
         exitButton.setOnAction(e -> saveLibraryData(primaryStage));
 
-        VBox layout = new VBox(10, addUserButton, addBookButton, borrowBookButton, returnBookButton, loanReportButton, exitButton);
+        VBox layout = new VBox(10, addUserButton, addBookButton, borrowBookButton, returnBookButton, loanReportButton, delayReporButton, exitButton);
         layout.setPadding(new javafx.geometry.Insets(20));
 
         Scene scene = new Scene(layout, 300, 350);
@@ -258,6 +260,12 @@ public class LibraryUi implements ILibraryPluginUi{
     @Override
     public void showLoanReport(){
         String pluginName = "LoanReport";
+        ICore.getInstance().getPluginController().executePlugin(pluginName);
+    }
+
+    @Override
+    public void showDelayReport(){
+        String pluginName = "DelayReport";
         ICore.getInstance().getPluginController().executePlugin(pluginName);
     }
 

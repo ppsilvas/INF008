@@ -4,7 +4,6 @@ import br.edu.ifba.inf008.App;
 import br.edu.ifba.inf008.interfaces.IPluginController;
 import br.edu.ifba.inf008.interfaces.IPlugin;
 import br.edu.ifba.inf008.interfaces.ICore;
-import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.interfaces.ILibraryPluginUi;
 import br.edu.ifba.inf008.interfaces.ILoanReport;
 
@@ -106,8 +105,9 @@ public class PluginController implements IPluginController
     }
 
     private void configurePlugins(){
-        addPlugin("LibraryUi", new Class<?>[]{ILibraryController.class}, new Object[]{Core.getInstance().getLibraryController()});
+        addPlugin("LibraryUi", null, null);
         addPlugin("MyPlugin", null, null);
-        addPlugin("LoanReport", new Class<?>[]{ILibraryController.class}, new Object[]{Core.getInstance().getLibraryController()});
+        addPlugin("LoanReport", null, null);
+        addPlugin("DelayReport", null, null);
     }
 }

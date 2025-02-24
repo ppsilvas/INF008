@@ -13,6 +13,8 @@ public interface ILibraryController {
     public abstract boolean returnBook(int userId, int bookIsbn, int loanId);
     public abstract List<Book> getAvailableBooks();
     public abstract List<Book> getBorrowedBooks();
+    public abstract List<Book> getLateBooks();
+    public abstract List<Double> getFine();
     public abstract Book searchBook(String title);
     public abstract User searchUser(String name);
     public abstract void loadData();

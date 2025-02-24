@@ -18,6 +18,7 @@ public class LibraryController implements ILibraryController {
         User user = new User(name);
         addUser(user);
     }
+
     @Override
     public void newBook(String title, String author, int realeaseYear, String genre){
         Book book = new Book(title, author, realeaseYear, genre);
@@ -39,12 +40,12 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
+
     @Override
     public boolean borrowBook(int userId, int bookIsbn, LocalDate loanDate){
         Book book = Library.books.get(bookIsbn);
         User user = Library.users.get(userId);
         if(book != null && user != null && book.getIsAvailable() && user.getBorrewedBooks().size()<5){
-            System.out.println("Passei Borrow"+user.getBorrewedBooks().size());
             user.borrowBook(book);
             Loan loan = new Loan(user, book, loanDate);
             Library.loans.add(loan);;
@@ -52,6 +53,7 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
+
     @Override
     public boolean returnBook(int userId, int bookIsbn, int loanId){
         Book book = Library.books.get(bookIsbn);
@@ -60,7 +62,6 @@ public class LibraryController implements ILibraryController {
 
         if(book != null && user != null && loan != null){
             if(loan.isOverdue()){
-                System.out.println("Passei Return");
                 loan.calculateFine();
             }
             user.returnBook(book);
@@ -69,6 +70,7 @@ public class LibraryController implements ILibraryController {
         }
         return false;
     }
+    
     @Override
     public List<Book> getAvailableBooks(){
         ArrayList<Book> availableBooks = new ArrayList<>();
@@ -79,6 +81,7 @@ public class LibraryController implements ILibraryController {
         }
         return availableBooks;
     }
+
     @Override
     public List<Book> getBorrowedBooks(){
         ArrayList<Book> borrowedBooks = new ArrayList<>();
@@ -89,6 +92,29 @@ public class LibraryController implements ILibraryController {
         }
         return borrowedBooks;
     }
+
+    @Override
+    public List<Book> getLateBooks(){
+        ArrayList<Book> lateBooks = new ArrayList<>();
+        for(Loan loan: Library.loans){
+            if(loan.isOverdue()){
+                lateBooks.add(loan.getBook());
+            }
+        }
+        return lateBooks;
+    }
+
+    @Override
+    public List<Double> getFine(){
+        ArrayList<Double> lateLoansFine = new ArrayList<>();
+        for(Loan loan: Library.loans){
+            if(loan.isOverdue()){
+                lateLoansFine.add(loan.calculateFine());
+            }
+        }
+        return lateLoansFine;
+    }
+
     @Override
     public Book searchBook(String title){
         Optional<Book> book = Library.books.stream().filter(b->b.getTitle().toLowerCase().contains(title.toLowerCase())).findFirst();
@@ -96,6 +122,7 @@ public class LibraryController implements ILibraryController {
             return null;
         return book.get();
     }
+
     @Override
     public User searchUser(String name){
         Optional<User> user = Library.users.stream().filter(u->u.getName().toLowerCase().equals(name.toLowerCase())).findFirst();
@@ -103,6 +130,7 @@ public class LibraryController implements ILibraryController {
             return null;
         return user.get();
     }
+
     @Override
     public void loadData(){
         try{
@@ -117,6 +145,7 @@ public class LibraryController implements ILibraryController {
             System.out.println("Error: " + e.getClass().getName() + " - " + e.getMessage());
         }
     }
+
     @Override
     public void saveData(){
        

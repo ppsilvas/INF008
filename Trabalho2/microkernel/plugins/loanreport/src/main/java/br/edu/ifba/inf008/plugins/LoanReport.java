@@ -1,5 +1,6 @@
 package br.edu.ifba.inf008.plugins;
 
+import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.interfaces.ILoanReport;
 import br.edu.ifba.inf008.models.Book;
@@ -19,8 +20,8 @@ public class LoanReport implements ILoanReport{
     private Stage primaryStage;
     private ILibraryController libraryController;
 
-    public LoanReport(ILibraryController libraryController){
-        this.libraryController = libraryController;
+    public LoanReport(){
+        this.libraryController = ICore.getInstance().getLibraryController();
     }
 
     @Override
@@ -46,7 +47,7 @@ public class LoanReport implements ILoanReport{
             }
         });
 
-        Button cancelButton = new Button("Cancelar");
+        Button cancelButton = new Button("Voltar");
         cancelButton.setOnAction(e->primaryStage.close());
 
         VBox layout = new VBox(10, bookListView, cancelButton);
