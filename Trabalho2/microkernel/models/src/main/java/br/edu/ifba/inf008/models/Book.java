@@ -9,7 +9,7 @@ public class Book implements Serializable {
     private String author;
     private int realeaseYear;
     private String genre;
-    private boolean isAvailabe;
+    private boolean available;
 
     public Book(){
         
@@ -21,7 +21,7 @@ public class Book implements Serializable {
         this.author = author;
         this.realeaseYear = realeaseYear;
         this.genre = genre;
-        this.isAvailabe = true;
+        this.available = true;
     }
 
     public int getIsbn() {
@@ -45,10 +45,10 @@ public class Book implements Serializable {
     }
 
     public boolean getIsAvailable(){
-        return isAvailabe;
+        return available;
     }
 
-    public void availableChange(boolean availabe){
-        this.isAvailabe = availabe;
+    public void changeAvailable(boolean available){
+        this.available = available;
     } 
 }

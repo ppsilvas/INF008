@@ -2,9 +2,10 @@ package br.edu.ifba.inf008.shell;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.TreeMap;
 
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.models.Book;
@@ -14,9 +15,9 @@ import br.edu.ifba.inf008.models.User;
 
 public class LibraryController implements ILibraryController {
     @Override
-    public void newUser(String name){
+    public boolean newUser(String name){
         User user = new User(name);
-        addUser(user);
+        return addUser(user);
     }
 
     @Override
@@ -27,6 +28,10 @@ public class LibraryController implements ILibraryController {
 
     private boolean addUser(User user){
         if(user != null){
+            for(User userExist: Library.users){
+                if(userExist.getName().equalsIgnoreCase(user.getName()))
+                    return false;
+            }
             Library.users.add(user);;
             return true;
         }
@@ -61,11 +66,8 @@ public class LibraryController implements ILibraryController {
         Loan loan = Library.loans.get(loanId);
 
         if(book != null && user != null && loan != null){
-            if(loan.isOverdue()){
-                loan.calculateFine();
-            }
+            loan.setLoaned();
             user.returnBook(book);
-            saveData();
             return true;
         }
         return false;
@@ -83,36 +85,25 @@ public class LibraryController implements ILibraryController {
     }
 
     @Override
-    public List<Book> getBorrowedBooks(){
-        ArrayList<Book> borrowedBooks = new ArrayList<>();
-        for(Book book: Library.books){
-            if(!book.getIsAvailable()){
-                borrowedBooks.add(book);
+    public TreeMap<User,Book> getBorrowedBooks(){
+        TreeMap<User,Book> borrowedBooks = new TreeMap<>(Comparator.comparing(User::getId));
+        for(Loan loan: Library.loans){
+            if(loan.getLoaned()){
+                borrowedBooks.put(loan.getUser(),loan.getBook());
             }
         }
         return borrowedBooks;
     }
 
     @Override
-    public List<Book> getLateBooks(){
-        ArrayList<Book> lateBooks = new ArrayList<>();
+    public TreeMap<Double,Book> getLateBooks(){
+        TreeMap<Double,Book> lateBooks = new TreeMap<>();
         for(Loan loan: Library.loans){
-            if(loan.isOverdue()){
-                lateBooks.add(loan.getBook());
+            if(loan.getLoaned()&&loan.isOverdue()){
+                lateBooks.put(loan.calculateFine(),loan.getBook());
             }
         }
         return lateBooks;
-    }
-
-    @Override
-    public List<Double> getFine(){
-        ArrayList<Double> lateLoansFine = new ArrayList<>();
-        for(Loan loan: Library.loans){
-            if(loan.isOverdue()){
-                lateLoansFine.add(loan.calculateFine());
-            }
-        }
-        return lateLoansFine;
     }
 
     @Override
@@ -126,9 +117,19 @@ public class LibraryController implements ILibraryController {
     @Override
     public User searchUser(String name){
         Optional<User> user = Library.users.stream().filter(u->u.getName().toLowerCase().equals(name.toLowerCase())).findFirst();
-        if(!user.isPresent())
+        if(!user.isPresent()){
             return null;
+        }
         return user.get();
+    }
+
+    @Override
+    public Double calculateFine(int loanId){
+        Optional<Loan> loan = Library.loans.stream().filter((l->l.getId()==loanId)).findFirst();
+        if(loan.isPresent() && loan.get().isOverdue()){
+            return loan.get().calculateFine();
+        }
+        return 0.0;
     }
 
     @Override
@@ -148,7 +149,6 @@ public class LibraryController implements ILibraryController {
 
     @Override
     public void saveData(){
-       
         try {
             Core.getInstance().getIOController().saveData(Library.books,Library.users,Library.loans, Book.numberOfBooks, User.numberOfUsers, Loan.numberOfLoans);
         } catch (Exception e) {
