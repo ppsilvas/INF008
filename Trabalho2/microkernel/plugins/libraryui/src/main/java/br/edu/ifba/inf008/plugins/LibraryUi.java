@@ -8,7 +8,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.*;
@@ -21,6 +20,10 @@ public class LibraryUi implements ILibraryPluginUi{
     public LibraryUi(){
         this.libraryController = ICore.getInstance().getLibraryController();
     }
+    
+    // public LibraryUi(ILibraryController libraryController) {
+    //     this.libraryController = libraryController;
+    // }
 
     @Override
     public boolean init() {
@@ -51,11 +54,10 @@ public class LibraryUi implements ILibraryPluginUi{
         exitButton.setOnAction(e -> saveLibraryData(primaryStage));
 
         VBox layout = new VBox(10, addUserButton, addBookButton, borrowBookButton, returnBookButton, loanReportButton, delayReporButton, exitButton);
-        layout.setPadding(new Insets(20));
+        layout.setPadding(new javafx.geometry.Insets(20));
 
         Scene scene = new Scene(layout, 300, 350);
         primaryStage.setScene(scene);
-        primaryStage.setResizable(true);
         primaryStage.show();
     }
 
@@ -71,12 +73,9 @@ public class LibraryUi implements ILibraryPluginUi{
         submitButton.setOnAction(e -> {
             String name = nameField.getText();
             if (!name.isEmpty()) {
-                if(!libraryController.newUser(name))
-                    showAlert("Já existe um usuário com esse nome!", Alert.AlertType.WARNING);
-                else{
-                    showAlert("Usuário adicionado com sucesso!", Alert.AlertType.CONFIRMATION);
-                    stage.close();
-                }
+                libraryController.newUser(name);
+                showAlert("Usuário adicionado com sucesso!", Alert.AlertType.INFORMATION);
+                stage.close();
             } else {
                 showAlert("Nome não pode ser vazio.", Alert.AlertType.ERROR);
             }
@@ -139,7 +138,6 @@ public class LibraryUi implements ILibraryPluginUi{
         stage.setScene(scene);
         stage.show();
     }
-
     @Override
     public void showBorrowBookMenu() {
         Stage stage = new Stage();
@@ -177,9 +175,6 @@ public class LibraryUi implements ILibraryPluginUi{
             }
         });
 
-        bookListView.setPrefSize(100, 50);
-        bookListView.setPadding(new Insets(2, 2, 2, 2));
-
         DatePicker loanDatePicker = new DatePicker();
         loanDatePicker.setValue(LocalDate.now());
 
@@ -204,7 +199,6 @@ public class LibraryUi implements ILibraryPluginUi{
                     showAlert("Falha ao emprestar livro.", Alert.AlertType.ERROR);
                 }
             } catch (Exception ex) {
-                System.err.println(ex.getMessage());
                 showAlert("Nome do usuário inválido.", Alert.AlertType.ERROR);
             }
         });
@@ -213,23 +207,22 @@ public class LibraryUi implements ILibraryPluginUi{
         cancelButton.setOnAction(e -> stage.close());
 
         VBox layout = new VBox(10, userIdField, searchField, bookListView, loanDatePicker, submitButton, cancelButton);
-        layout.setPadding(new javafx.geometry.Insets(10,10,15,15));
+        layout.setPadding(new javafx.geometry.Insets(20));
 
         Scene scene = new Scene(layout, 400, 400);
         stage.setScene(scene);
         stage.show();
     }
-
     @Override
     public void showReturnBookMenu() {
         Stage stage = new Stage();
         stage.setTitle("Devolver Livro");
 
-        TextField userField = new TextField();
-        userField.setPromptText("Nome do Usuário");
+        TextField userIdField = new TextField();
+        userIdField.setPromptText("Nome do Usuário");
 
-        TextField bookField = new TextField();
-        bookField.setPromptText("Titulo do Livro");
+        TextField isbnField = new TextField();
+        isbnField.setPromptText("Titulo do Livro");
 
         TextField loanIdField = new TextField();
         loanIdField.setPromptText("ID do Empréstimo");
@@ -237,17 +230,13 @@ public class LibraryUi implements ILibraryPluginUi{
         Button submitButton = new Button("Devolver");
         submitButton.setOnAction(e -> {
             try {
-                String userName = userField.getText();
-                String bookTitle = bookField.getText();
+                String userName = userIdField.getText();
+                String bookTitle = isbnField.getText();
                 int userId = libraryController.searchUser(userName).getId();
                 int isbn = libraryController.searchBook(bookTitle).getIsbn();
-                int loanId = Integer.parseInt(loanIdField.getText())-1;
+                int loanId = Integer.parseInt(loanIdField.getText());
                 if (libraryController.returnBook(userId, isbn, loanId)) {
-                    double fine = libraryController.calculateFine(loanId);
-                    if(fine > 0.0)
-                        showAlert("A devolução está atrasada. Pague a multa no valor R$ "+fine+".", Alert.AlertType.WARNING);
-                    else
-                        showAlert("Livro devolvido com sucesso!", Alert.AlertType.CONFIRMATION);
+                    showAlert("Livro devolvido com sucesso!", Alert.AlertType.INFORMATION);
                     stage.close();
                 } else {
                     showAlert("Falha ao devolver livro.", Alert.AlertType.ERROR);
@@ -260,7 +249,7 @@ public class LibraryUi implements ILibraryPluginUi{
         Button cancelButton = new Button("Cancelar");
         cancelButton.setOnAction(e -> stage.close());
 
-        VBox layout = new VBox(10, userField, bookField, loanIdField, submitButton, cancelButton);
+        VBox layout = new VBox(10, userIdField, isbnField, loanIdField, submitButton, cancelButton);
         layout.setPadding(new javafx.geometry.Insets(20));
 
         Scene scene = new Scene(layout, 300, 300);

@@ -1,6 +1,8 @@
 package br.edu.ifba.inf008.shell;
 
 import br.edu.ifba.inf008.interfaces.*;
+import javafx.application.Application;
+import javafx.application.Platform;
 
 public class Core extends ICore
 {
@@ -12,6 +14,9 @@ public class Core extends ICore
             System.exit(-1);
         }
         instance = new Core();
+        // persistanceTest.fillShelves();
+        // persistanceTest.subscribeUsers();
+        // persistanceTest.registerLoans();
         UIController.launch(UIController.class);
 
         return true;
@@ -36,4 +41,5 @@ public class Core extends ICore
     private IIOController ioController = new IOController();
     private IPluginController pluginController = new PluginController();
     private static ILibraryController libraryController = new LibraryController();
+        private static IPersistanceTest persistanceTest = new PersistanceTest(libraryController);
 }

@@ -3,6 +3,7 @@ package br.edu.ifba.inf008.shell;
 import br.edu.ifba.inf008.App;
 import br.edu.ifba.inf008.interfaces.IPluginController;
 import br.edu.ifba.inf008.interfaces.IPlugin;
+import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.ILibraryPluginUi;
 import br.edu.ifba.inf008.interfaces.ILoanReport;
 

@@ -9,6 +9,7 @@ import java.util.ArrayList;
 
 import br.edu.ifba.inf008.interfaces.IIOController;
 import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.Library;
 import br.edu.ifba.inf008.models.Loan;
 import br.edu.ifba.inf008.models.User;
 
@@ -47,9 +48,7 @@ public class IOController implements IIOController
         if(!file.exists()||file.length() == 0){
             try {   
                 return new Object[]{
-                    new ArrayList<Book>(),
-                    new ArrayList<User>(),
-                    new ArrayList<Loan>(),
+                    new Library(),
                     0,
                     0,
                     0

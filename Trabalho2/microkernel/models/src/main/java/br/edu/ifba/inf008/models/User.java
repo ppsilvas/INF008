@@ -32,8 +32,9 @@ public class User implements Serializable {
     }
 
     public boolean borrowBook(Book book){
-        if(borrewedBooks.add(book)){
-            book.changeAvailable(false);
+        if(borrewedBooks.size() < 5){
+            borrewedBooks.add(book);
+            book.availableChange(false);
             return true;
         }
         return false;
@@ -41,7 +42,7 @@ public class User implements Serializable {
 
     public boolean returnBook(Book book){
         if(borrewedBooks.remove(book)){
-            book.changeAvailable(true);
+            book.availableChange(true);
             return true;
         }
         return false;

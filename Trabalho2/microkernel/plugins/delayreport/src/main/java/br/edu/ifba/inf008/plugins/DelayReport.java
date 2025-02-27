@@ -1,9 +1,10 @@
 package br.edu.ifba.inf008.plugins;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-import java.util.stream.Collectors;
+import java.util.Observer;
+import java.util.stream.IntStream;
 
 import br.edu.ifba.inf008.interfaces.ICore;
 import br.edu.ifba.inf008.interfaces.IDelayReport;
@@ -12,8 +13,8 @@ import br.edu.ifba.inf008.models.Book;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableArray;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -38,7 +39,6 @@ public class DelayReport implements IDelayReport{
     @Override
     public void showDelayReport(){
         primaryStage = new Stage();
-        primaryStage.setTitle("Livros Atrasados");
         TableView<Map.Entry<Book, Double>> tableView = new TableView<>();
 
         TableColumn<Map.Entry<Book, Double>,String> titleColumn = new TableColumn<>("Livro");
@@ -50,30 +50,24 @@ public class DelayReport implements IDelayReport{
 
         tableView.getColumns().addAll(titleColumn,fineColumn);
 
-        TreeMap<Double,Book>lateBooks = libraryController.getLateBooks();
+        List<Book> lateBooks = libraryController.getLateBooks();
+        List<Double> fines = libraryController.getFine();
 
         ObservableList<Map.Entry<Book,Double>> lateBooksWithFine = FXCollections.observableArrayList(
-            lateBooks.entrySet().stream()
-                .map(entry-> new AbstractMap.SimpleEntry<>(entry.getValue(),  entry.getKey()))
-                .collect(Collectors.toList())
+            IntStream.range(0, lateBooks.size())
+                .mapToObj(i -> new AbstractMap.SimpleEntry<>(lateBooks.get(i), fines.get(i)))
+                .toList()
         );
 
         tableView.setItems(lateBooksWithFine);
-
-        tableView.setPrefSize(200, 250);
-        tableView.setPadding(new Insets(2,2,2,2));
-
-        titleColumn.setPrefWidth(150);
-        fineColumn.setPrefWidth(100);
 
         Button cancelButton = new Button("Voltar");
         cancelButton.setOnAction(e->primaryStage.close());
 
         VBox vbox = new VBox(10, tableView, cancelButton);
-        vbox.setPadding(new Insets(10, 10, 10, 10));
-
         Scene scene = new Scene(vbox, 300, 300);
         primaryStage.setScene(scene);
+        primaryStage.setTitle("Impressão de Tabela");
         primaryStage.show();
     }
 }
