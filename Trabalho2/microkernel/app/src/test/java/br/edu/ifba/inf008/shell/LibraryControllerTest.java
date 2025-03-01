@@ -11,8 +11,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 class LibraryControllerTest {
 
@@ -149,6 +147,6 @@ class LibraryControllerTest {
 
         Double fine = libraryController.calculateFine(loan.getId());
 
-        assertEquals(0.5,fine,"Fine should be 10.0");
+        assertEquals(0.5,fine,"Fine should be 0.5");
     }
 }

@@ -1,10 +1,6 @@
 package br.edu.ifba.inf008.shell;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.*;
 import java.util.ArrayList;
 
 import br.edu.ifba.inf008.interfaces.IIOController;
@@ -24,8 +20,7 @@ public class IOController implements IIOController
                 System.out.println("Creating File");
                 file.createNewFile();
             } catch (Exception e) {
-                System.err.println("Unable to create File");
-                e.printStackTrace();
+                System.err.println(e.getClass()+". Unable to create File");
             }
         }
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
@@ -75,7 +70,7 @@ public class IOController implements IIOController
                 numberOfUsers
             };
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(e.getClass()+" - "+e.getMessage());
             
             return new Object[]{
                 new ArrayList<>(),
@@ -86,6 +81,6 @@ public class IOController implements IIOController
                 0
             };
         }
-        
+
     }
 }

@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class IOControllerTest {
 
     private IOController ioController;
-    private final String TEST_FILE = "testLibraryData.dat";
+    private final String TEST_FILE = "libraryData.dat";
 
     @BeforeEach
     void setup(){

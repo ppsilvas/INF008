@@ -6,6 +6,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.TreeMap;
+import java.util.stream.Collectors;
 
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.models.Book;
@@ -21,27 +22,33 @@ public class LibraryController implements ILibraryController {
     }
 
     @Override
-    public void newBook(String title, String author, int releaseYear, String genre){
+    public boolean newBook(String title, String author, int releaseYear, String genre){
         Book book = new Book(title, author, releaseYear, genre);
-        addBook(book);
+        return addBook(book);
     }
 
     private boolean addUser(User user){
         if(user != null){
-            for(User userExist: Library.users){
-                if(userExist.getName().equalsIgnoreCase(user.getName()))
-                    return false;
+            if(searchUser(user.getName()) == null) {
+                Library.users.add(user);
+                return true;
             }
-            Library.users.add(user);
-            return true;
         }
         return false;
     }
 
-    private void addBook(Book book){
+    public List<User> getUsers(){
+        return Library.users;
+    }
+
+    private boolean addBook(Book book){
         if(book != null){
-            Library.books.add(book);
+            if(searchBook(book.getTitle()) == null) {
+                Library.books.add(book);
+                return  true;
+            }
         }
+        return  false;
     }
 
     @Override
@@ -57,10 +64,10 @@ public class LibraryController implements ILibraryController {
 
     @Override
     public boolean returnBook(User user, Book book, int loanId){
-        Loan loan = Library.loans.get(loanId);
+        Optional<Loan> loan = Library.loans.stream().filter(b->b.getId() == loanId).findFirst();
 
-        if(book != null && user != null && loan != null){
-            loan.setLoaned();
+        if(book != null && user != null && loan.isPresent()){
+            loan.get().setLoaned();
             return user.returnBook(book);
         }
         return false;
@@ -78,11 +85,11 @@ public class LibraryController implements ILibraryController {
     }
 
     @Override
-    public TreeMap<User,Book> getBorrowedBooks(){
-        TreeMap<User,Book> borrowedBooks = new TreeMap<>(Comparator.comparing(User::getId));
+    public TreeMap<User,List<Book>> getBorrowedBooks(){
+        TreeMap<User,List<Book>> borrowedBooks = new TreeMap<>(Comparator.comparing(User::getId));
         for(Loan loan: Library.loans){
             if(loan.getLoaned()){
-                borrowedBooks.put(loan.getUser(),loan.getBook());
+                borrowedBooks.computeIfAbsent(loan.getUser(), k-> new ArrayList<>()).add(loan.getBook());
             }
         }
         return borrowedBooks;
@@ -97,6 +104,11 @@ public class LibraryController implements ILibraryController {
             }
         }
         return lateBooks;
+    }
+
+    @Override
+    public List<Loan> getLoans() {
+        return Library.loans.stream().filter(Loan::getLoaned).collect(Collectors.toList());
     }
 
     @Override
