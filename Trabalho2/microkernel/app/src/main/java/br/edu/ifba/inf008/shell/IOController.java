@@ -16,7 +16,7 @@ public class IOController implements IIOController
 {
     private static final String FILE_NAME = "libraryData.dat";
     @Override
-    public <T> boolean saveData(ArrayList<Book>books,ArrayList<User>users,ArrayList<Loan>loans, int numberOfBooks, int numberOfUsers, int numberOfLoans){
+    public boolean saveData(ArrayList<Book>books,ArrayList<User>users,ArrayList<Loan>loans, int numberOfBooks, int numberOfUsers, int numberOfLoans){
         File file = new File(FILE_NAME);
         if(!file.exists()){
             System.out.println("File doesn't exist");
@@ -47,9 +47,9 @@ public class IOController implements IIOController
         if(!file.exists()||file.length() == 0){
             try {   
                 return new Object[]{
-                    new ArrayList<Book>(),
-                    new ArrayList<User>(),
-                    new ArrayList<Loan>(),
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    new ArrayList<>(),
                     0,
                     0,
                     0
@@ -78,9 +78,9 @@ public class IOController implements IIOController
             e.printStackTrace();
             
             return new Object[]{
-                new ArrayList<Book>(),
-                new ArrayList<User>(),
-                new ArrayList<Loan>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
                 0,
                 0,
                 0

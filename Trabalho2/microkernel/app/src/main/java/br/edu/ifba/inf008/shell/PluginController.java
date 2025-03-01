@@ -17,11 +17,9 @@ import java.util.List;
 
 public class PluginController implements IPluginController
 {
-    private List<PluginConfig> pluginconfig = new ArrayList<>();
-    private HashMap<String, Object> iPlugins = new HashMap<>();
+    private HashMap<String, IPlugin> iPlugins = new HashMap<>();
 
     public boolean init() {
-        configurePlugins();
         try {
             File currentDir = new File("./plugins");
 
@@ -41,14 +39,11 @@ public class PluginController implements IPluginController
                 jars[i] = (new File("./plugins/" + plugins[i])).toURL();
             }
             URLClassLoader ulc = new URLClassLoader(jars, App.class.getClassLoader());
-            for (PluginConfig plugin : pluginconfig)
+            for (i = 0; i < plugins.length; i++)
             {
-                String pluginName = plugin.getClassName();
-                Class<?> pluginClass = Class.forName("br.edu.ifba.inf008.plugins." + pluginName, true, ulc);
-                Constructor<?> constructor = pluginClass.getDeclaredConstructor(plugin.getParametersType());
-                Object pluginInstance = constructor.newInstance(plugin.getParameters());
-
-                iPlugins.put(pluginName, pluginInstance);
+                String pluginName = plugins[i].split("\\.")[0];
+                IPlugin plugin = (IPlugin) Class.forName("br.edu.ifba.inf008.plugins." + pluginName, true, ulc).newInstance();
+                iPlugins.put(pluginName,plugin);
             }
 
             return true;
@@ -62,51 +57,18 @@ public class PluginController implements IPluginController
 
     @Override
     public boolean executePlugin(String pluginName){
-        Object plugin = iPlugins.get(pluginName);
+        IPlugin plugin = iPlugins.get(pluginName);
         if(plugin instanceof ILibraryPluginUi){
-            ((ILibraryPluginUi) plugin).init();
+            plugin.init();
             return true;
         }else if(plugin instanceof ILoanReport){
-            ((ILoanReport) plugin).init();
+            plugin.init();
             return true;
-        }else if(plugin instanceof IPlugin){
-            ((IPlugin) plugin).init();
+        }else if(plugin != null){
+            plugin.init();
             return true;
         }else{
             return false;
         }
-    }
-
-    private static class PluginConfig {
-        private String className;
-        private Class<?>[] parametersType;
-        private Object[] parameters;
-
-        protected PluginConfig(String className, Class<?>[] parametersType, Object[] parameters){
-            this.className = className;
-            this.parametersType = parametersType;
-            this.parameters = parameters;
-        }
-
-        public String getClassName() {
-            return className;
-        }
-        public Object[] getParameters() {
-            return parameters;
-        }
-        public Class<?>[] getParametersType() {
-            return parametersType;
-        }
-    }
-
-    private void addPlugin(String className, Class<?>[] parametersType, Object[] parameters){
-        pluginconfig.add(new PluginConfig(className, parametersType, parameters));
-    }
-
-    private void configurePlugins(){
-        addPlugin("LibraryUi", null, null);
-        addPlugin("MyPlugin", null, null);
-        addPlugin("LoanReport", null, null);
-        addPlugin("DelayReport", null, null);
     }
 }
