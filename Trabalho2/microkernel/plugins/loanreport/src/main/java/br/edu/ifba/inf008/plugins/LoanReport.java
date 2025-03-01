@@ -1,6 +1,7 @@
 package br.edu.ifba.inf008.plugins;
 
 import java.util.AbstractMap;
+import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
@@ -51,11 +52,11 @@ public class LoanReport implements ILoanReport{
 
         tableView.getColumns().addAll(bookColumn,userColumn);
 
-        TreeMap<User,Book> booksAndUsers = libraryController.getBorrowedBooks();
+        TreeMap<User, List<Book>> booksAndUsers = libraryController.getBorrowedBooks();
 
         ObservableList<Map.Entry<Book,User>> loanedBooksAndUser = FXCollections.observableArrayList(
             booksAndUsers.entrySet().stream()
-            .map(entry -> new AbstractMap.SimpleEntry<>(entry.getValue(),entry.getKey()))
+            .flatMap(entry -> entry.getValue().stream().map(book -> new AbstractMap.SimpleEntry<>(book, entry.getKey())))
             .collect(Collectors.toList())
         );
 

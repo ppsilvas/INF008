@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.Loan;
 import br.edu.ifba.inf008.models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -91,6 +92,7 @@ public class LibraryUi implements ILibraryPluginUi{
 
         Scene scene = new Scene(layout, 300, 200);
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 
@@ -119,9 +121,12 @@ public class LibraryUi implements ILibraryPluginUi{
             String genre = genreField.getText();
             if (!title.isEmpty() && !author.isEmpty() && !year.isEmpty() && !genre.isEmpty()) {
                 try {
-                    libraryController.newBook(title, author, Integer.parseInt(year), genre);
-                    showAlert("Livro adicionado com sucesso!", Alert.AlertType.INFORMATION);
-                    stage.close();
+                    if(libraryController.newBook(title, author, Integer.parseInt(year), genre)) {
+                        showAlert("Livro adicionado com sucesso!", Alert.AlertType.INFORMATION);
+                        stage.close();
+                    }else{
+                        showAlert("Esse livro já está cadastrado no sistema.", Alert.AlertType.ERROR);
+                    }
                 } catch (NumberFormatException ex) {
                     showAlert("Ano de lançamento inválido.", Alert.AlertType.ERROR);
                 }
@@ -138,6 +143,7 @@ public class LibraryUi implements ILibraryPluginUi{
 
         Scene scene = new Scene(layout, 300, 300);
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 
@@ -148,6 +154,34 @@ public class LibraryUi implements ILibraryPluginUi{
 
         TextField userIdField = new TextField();
         userIdField.setPromptText("Nome do Usuário");
+
+        ListView<User> userListView = new ListView<>();
+        ObservableList<User> allUsers = FXCollections.observableArrayList(libraryController.getUsers());
+        FilteredList<User> filteredUser = new FilteredList<>(allUsers, b->true);
+
+        userListView.setItems(filteredUser);
+        userListView.setCellFactory(param -> new ListCell<>(){
+            @Override
+            protected void updateItem(User user, boolean empty){
+                super.updateItem(user, empty);
+                setText((empty || user == null)?null:user.getName());
+            }
+        });
+
+        userIdField.textProperty().addListener((observable, oldValue, newValue)-> filteredUser.setPredicate(user ->
+            newValue == null || newValue.isEmpty() || user.getName().toLowerCase().contains(newValue.toLowerCase())
+        ));
+
+        final User[] selectedUser = {null};
+        userListView.getSelectionModel().selectedItemProperty().addListener(((observable, oldSelection, newSelection) -> {
+            if(newSelection != null){
+                selectedUser[0] = newSelection;
+            }
+        }));
+
+        userListView.setPrefSize(100,50);
+        userListView.setPadding(new Insets(2,2,2,2));
+        userListView.isResizable();
 
         TextField searchField = new TextField();
         searchField.setPromptText("Digite o título do livro...");
@@ -167,7 +201,7 @@ public class LibraryUi implements ILibraryPluginUi{
 
         searchField.textProperty().addListener((observable, oldValue, newValue) -> filteredBooks.setPredicate(book ->
                 newValue == null || newValue.isEmpty() || book.getTitle().toLowerCase().contains(newValue.toLowerCase())
-            ));
+        ));
 
         final Book[] selectedBook = {null};
         bookListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -178,6 +212,7 @@ public class LibraryUi implements ILibraryPluginUi{
 
         bookListView.setPrefSize(100, 50);
         bookListView.setPadding(new Insets(2, 2, 2, 2));
+        bookListView.isResizable();
 
         DatePicker loanDatePicker = new DatePicker();
         loanDatePicker.setValue(LocalDate.now());
@@ -186,14 +221,13 @@ public class LibraryUi implements ILibraryPluginUi{
         submitButton.setOnAction(e -> {
             try {
                 LocalDate loanDate = loanDatePicker.getValue();
-                String userName = userIdField.getText();
 
                 if (selectedBook[0] == null) {
                     showAlert("Selecione um livro!", Alert.AlertType.WARNING);
                     return;
                 }
 
-                User user = libraryController.searchUser(userName);
+                User user = selectedUser[0];
                 Book book = selectedBook[0];
 
                 if (libraryController.loanBook(user, book, loanDate)) {
@@ -211,11 +245,12 @@ public class LibraryUi implements ILibraryPluginUi{
         Button cancelButton = new Button("Cancelar");
         cancelButton.setOnAction(e -> stage.close());
 
-        VBox layout = new VBox(10, userIdField, searchField, bookListView, loanDatePicker, submitButton, cancelButton);
+        VBox layout = new VBox(10, userIdField, userListView, searchField, bookListView, loanDatePicker, submitButton, cancelButton);
         layout.setPadding(new javafx.geometry.Insets(10,10,15,15));
 
         Scene scene = new Scene(layout, 400, 400);
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 
@@ -224,25 +259,35 @@ public class LibraryUi implements ILibraryPluginUi{
         Stage stage = new Stage();
         stage.setTitle("Devolver Livro");
 
-        TextField userField = new TextField();
-        userField.setPromptText("Nome do Usuário");
+        ListView<Loan> loanList = new ListView<>();
 
-        TextField bookField = new TextField();
-        bookField.setPromptText("Titulo do Livro");
+        ObservableList<Loan> allLoans = FXCollections.observableArrayList(libraryController.getLoans());
 
-        TextField loanIdField = new TextField();
-        loanIdField.setPromptText("ID do Empréstimo");
+        loanList.setItems(allLoans);
+        loanList.setCellFactory(param -> new ListCell<>(){
+            @Override
+            protected void updateItem(Loan loan, boolean empty){
+                super.updateItem(loan, empty);
+                setText((empty || loan == null)?null:"ID-"+loan.getId()+" | Livro: "+loan.getBook().getTitle()+" | Usuário: "+loan.getUser().getName());
+            }
+        });
+
+        final Loan[] selectedLoan = {null};
+        loanList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        loanList.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection)->{
+            if(newSelection != null){
+                selectedLoan[0] = newSelection;
+            }
+        });
 
         Button submitButton = new Button("Devolver");
         submitButton.setOnAction(e -> {
             try {
-                String userName = userField.getText();
-                String bookTitle = bookField.getText();
-                User user = libraryController.searchUser(userName);
-                Book book = libraryController.searchBook(bookTitle);
-                int loanId = Integer.parseInt(loanIdField.getText())-1;
-                if (libraryController.returnBook(user, book, loanId)) {
-                    double fine = libraryController.calculateFine(loanId);
+                Loan loan = selectedLoan[0];
+                User user = loan.getUser();
+                Book book = loan.getBook();
+                if (libraryController.returnBook(user, book, loan.getId())) {
+                    double fine = libraryController.calculateFine(loan.getId());
                     if(fine > 0.0)
                         showAlert("A devolução está atrasada. Pague a multa no valor R$ "+fine+".", Alert.AlertType.WARNING);
                     else
@@ -259,11 +304,12 @@ public class LibraryUi implements ILibraryPluginUi{
         Button cancelButton = new Button("Cancelar");
         cancelButton.setOnAction(e -> stage.close());
 
-        VBox layout = new VBox(10, userField, bookField, loanIdField, submitButton, cancelButton);
+        VBox layout = new VBox(10, loanList, submitButton, cancelButton);
         layout.setPadding(new javafx.geometry.Insets(20));
 
         Scene scene = new Scene(layout, 300, 300);
         stage.setScene(scene);
+        stage.setResizable(true);
         stage.show();
     }
 
