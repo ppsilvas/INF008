@@ -7,7 +7,7 @@ public class Book implements Serializable {
     private int isbn;
     private String title;
     private String author;
-    private int realeaseYear;
+    private int releaseYear;
     private String genre;
     private boolean available;
 
@@ -15,11 +15,11 @@ public class Book implements Serializable {
         
     }
 
-    public Book(String title, String author, int realeaseYear, String genre){
+    public Book(String title, String author, int releaseYear, String genre){
         this.isbn = numberOfBooks++;
         this.title = title;
         this.author = author;
-        this.realeaseYear = realeaseYear;
+        this.releaseYear = releaseYear;
         this.genre = genre;
         this.available = true;
     }
@@ -36,8 +36,8 @@ public class Book implements Serializable {
         return author;
     }
 
-    public int getRealeaseYear() {
-        return realeaseYear;
+    public int getReleaseYear() {
+        return releaseYear;
     }
 
     public String getGenre() {
@@ -48,7 +48,7 @@ public class Book implements Serializable {
         return available;
     }
 
-    public void changeAvailable(boolean available){
+    public void setAvailable(boolean available){
         this.available = available;
     } 
 }

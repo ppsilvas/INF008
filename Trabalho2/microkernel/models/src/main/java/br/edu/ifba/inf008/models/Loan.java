@@ -12,6 +12,10 @@ public class Loan implements Serializable {
     private LocalDate returnDate;
     private boolean loaned;
 
+    public Loan(){
+
+    }
+
     public Loan(User user, Book book, LocalDate loanDate){
         this.id = numberOfLoans++;
         this.user = user;
@@ -37,7 +41,7 @@ public class Loan implements Serializable {
         return loanDate;
     }
 
-    public LocalDate getReturDate() {
+    public LocalDate getReturnDate() {
         return returnDate;
     }
 
@@ -47,13 +51,5 @@ public class Loan implements Serializable {
 
     public void setLoaned(){
         loaned = false;
-    }
-
-    public boolean isOverdue(){
-        return returnDate.isBefore(LocalDate.now());
-    }
-
-    public double calculateFine(){
-        return (LocalDate.now().toEpochDay() - returnDate.toEpochDay())*0.5;
     }
 }

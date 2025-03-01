@@ -8,16 +8,16 @@ public class User implements Serializable {
     public static int numberOfUsers;
     private int id;
     private String name;
-    private List<Book> borrewedBooks;
+    private List<Book> borrowedBooks;
 
     public User(){
-        
+
     }
 
     public User(String name){
         this.id = numberOfUsers++;
         this.name = name;
-        this.borrewedBooks = new ArrayList<Book>();
+        this.borrowedBooks = new ArrayList<Book>();
     }
 
     public int getId() {
@@ -27,21 +27,20 @@ public class User implements Serializable {
     public String getName() {
         return name;
     }
-    public List<Book> getBorrewedBooks() {
-        return borrewedBooks;
+    public List<Book> getBorrowedBooks() {
+        return borrowedBooks;
     }
 
-    public boolean borrowBook(Book book){
-        if(borrewedBooks.add(book)){
-            book.changeAvailable(false);
-            return true;
+    public void borrowBook(Book book){
+        if(book.getIsAvailable() && borrowedBooks.size()<5) {
+            borrowedBooks.add(book);
+            book.setAvailable(false);
         }
-        return false;
     }
 
     public boolean returnBook(Book book){
-        if(borrewedBooks.remove(book)){
-            book.changeAvailable(true);
+        if(borrowedBooks.remove(book)){
+            book.setAvailable(true);
             return true;
         }
         return false;
