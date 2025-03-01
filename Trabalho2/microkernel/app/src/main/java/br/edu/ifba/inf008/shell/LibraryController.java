@@ -21,8 +21,8 @@ public class LibraryController implements ILibraryController {
     }
 
     @Override
-    public void newBook(String title, String author, int realeaseYear, String genre){
-        Book book = new Book(title, author, realeaseYear, genre);
+    public void newBook(String title, String author, int releaseYear, String genre){
+        Book book = new Book(title, author, releaseYear, genre);
         addBook(book);
     }
 
@@ -32,47 +32,40 @@ public class LibraryController implements ILibraryController {
                 if(userExist.getName().equalsIgnoreCase(user.getName()))
                     return false;
             }
-            Library.users.add(user);;
+            Library.users.add(user);
             return true;
         }
         return false;
     }
 
-    private boolean addBook(Book book){
+    private void addBook(Book book){
         if(book != null){
             Library.books.add(book);
-            return true;
         }
-        return false;
     }
 
     @Override
-    public boolean borrowBook(int userId, int bookIsbn, LocalDate loanDate){
-        Book book = Library.books.get(bookIsbn);
-        User user = Library.users.get(userId);
-        if(book != null && user != null && book.getIsAvailable() && user.getBorrewedBooks().size()<5){
+    public boolean loanBook(User user, Book book, LocalDate loanDate){
+        if(book != null && user != null && book.getIsAvailable() && user.getBorrowedBooks().size()<5){
             user.borrowBook(book);
             Loan loan = new Loan(user, book, loanDate);
-            Library.loans.add(loan);;
+            Library.loans.add(loan);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean returnBook(int userId, int bookIsbn, int loanId){
-        Book book = Library.books.get(bookIsbn);
-        User user = Library.users.get(userId);
+    public boolean returnBook(User user, Book book, int loanId){
         Loan loan = Library.loans.get(loanId);
 
         if(book != null && user != null && loan != null){
             loan.setLoaned();
-            user.returnBook(book);
-            return true;
+            return user.returnBook(book);
         }
         return false;
     }
-    
+
     @Override
     public List<Book> getAvailableBooks(){
         ArrayList<Book> availableBooks = new ArrayList<>();
@@ -99,8 +92,8 @@ public class LibraryController implements ILibraryController {
     public TreeMap<Double,Book> getLateBooks(){
         TreeMap<Double,Book> lateBooks = new TreeMap<>();
         for(Loan loan: Library.loans){
-            if(loan.getLoaned()&&loan.isOverdue()){
-                lateBooks.put(loan.calculateFine(),loan.getBook());
+            if(loan.getLoaned()&&loan.getReturnDate().isBefore(LocalDate.now())){
+                lateBooks.put(((LocalDate.now().toEpochDay()-loan.getReturnDate().toEpochDay())*0.5),loan.getBook());
             }
         }
         return lateBooks;
@@ -109,25 +102,20 @@ public class LibraryController implements ILibraryController {
     @Override
     public Book searchBook(String title){
         Optional<Book> book = Library.books.stream().filter(b->b.getTitle().toLowerCase().contains(title.toLowerCase())).findFirst();
-        if(!book.isPresent())
-            return null;
-        return book.get();
+        return book.orElse(null);
     }
 
     @Override
     public User searchUser(String name){
-        Optional<User> user = Library.users.stream().filter(u->u.getName().toLowerCase().equals(name.toLowerCase())).findFirst();
-        if(!user.isPresent()){
-            return null;
-        }
-        return user.get();
+        Optional<User> user = Library.users.stream().filter(u-> u.getName().equalsIgnoreCase(name)).findFirst();
+        return user.orElse(null);
     }
 
     @Override
     public Double calculateFine(int loanId){
         Optional<Loan> loan = Library.loans.stream().filter((l->l.getId()==loanId)).findFirst();
-        if(loan.isPresent() && loan.get().isOverdue()){
-            return loan.get().calculateFine();
+        if(loan.isPresent() && loan.get().getReturnDate().isBefore(LocalDate.now())){
+            return (LocalDate.now().toEpochDay() - loan.get().getReturnDate().toEpochDay())*0.5;
         }
         return 0.0;
     }

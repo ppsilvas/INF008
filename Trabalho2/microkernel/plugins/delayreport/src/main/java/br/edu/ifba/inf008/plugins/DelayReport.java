@@ -23,7 +23,7 @@ import javafx.stage.Stage;
 
 public class DelayReport implements IDelayReport{
     private Stage primaryStage;
-    private ILibraryController libraryController;
+    private final ILibraryController libraryController;
 
     public DelayReport(){
         this.libraryController = ICore.getInstance().getLibraryController();

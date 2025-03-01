@@ -24,7 +24,7 @@ import javafx.stage.Stage;
 
 public class LoanReport implements ILoanReport{
     private Stage primaryStage;
-    private ILibraryController libraryController;
+    private final ILibraryController libraryController;
 
     public LoanReport(){
         this.libraryController = ICore.getInstance().getLibraryController();

@@ -9,9 +9,9 @@ import br.edu.ifba.inf008.models.User;
 
 public interface ILibraryController {
     public abstract boolean newUser(String name);
-    public abstract void newBook(String title, String author, int realeaseYear, String genre);
-    public abstract boolean borrowBook(int userId, int bookIsbn, LocalDate loanDate);
-    public abstract boolean returnBook(int userId, int bookIsbn, int loanId);
+    public abstract void newBook(String title, String author, int releaseYear, String genre);
+    public abstract boolean loanBook(User user, Book book, LocalDate loanDate);
+    public abstract boolean returnBook(User user, Book book, int loanId);
     public abstract List<Book> getAvailableBooks();
     public abstract TreeMap<User,Book> getBorrowedBooks();
     public abstract TreeMap<Double,Book> getLateBooks();

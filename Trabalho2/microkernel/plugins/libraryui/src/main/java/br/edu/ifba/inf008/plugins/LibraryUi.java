@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,7 +16,7 @@ import javafx.scene.layout.*;
 import javafx.stage.*;
 
 public class LibraryUi implements ILibraryPluginUi{
-    private ILibraryController libraryController;
+    private final ILibraryController libraryController;
     private Stage primaryStage;
 
     public LibraryUi(){
@@ -164,11 +165,9 @@ public class LibraryUi implements ILibraryPluginUi{
             }
         });
 
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            filteredBooks.setPredicate(book -> 
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> filteredBooks.setPredicate(book ->
                 newValue == null || newValue.isEmpty() || book.getTitle().toLowerCase().contains(newValue.toLowerCase())
-            );
-        });
+            ));
 
         final Book[] selectedBook = {null};
         bookListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
@@ -194,10 +193,10 @@ public class LibraryUi implements ILibraryPluginUi{
                     return;
                 }
 
-                int userId = libraryController.searchUser(userName).getId();
-                int isbn = selectedBook[0].getIsbn();
+                User user = libraryController.searchUser(userName);
+                Book book = selectedBook[0];
 
-                if (libraryController.borrowBook(userId, isbn, loanDate)) {
+                if (libraryController.loanBook(user, book, loanDate)) {
                     showAlert("Livro emprestado com sucesso!", Alert.AlertType.INFORMATION);
                     stage.close();
                 } else {
@@ -239,10 +238,10 @@ public class LibraryUi implements ILibraryPluginUi{
             try {
                 String userName = userField.getText();
                 String bookTitle = bookField.getText();
-                int userId = libraryController.searchUser(userName).getId();
-                int isbn = libraryController.searchBook(bookTitle).getIsbn();
+                User user = libraryController.searchUser(userName);
+                Book book = libraryController.searchBook(bookTitle);
                 int loanId = Integer.parseInt(loanIdField.getText())-1;
-                if (libraryController.returnBook(userId, isbn, loanId)) {
+                if (libraryController.returnBook(user, book, loanId)) {
                     double fine = libraryController.calculateFine(loanId);
                     if(fine > 0.0)
                         showAlert("A devolução está atrasada. Pague a multa no valor R$ "+fine+".", Alert.AlertType.WARNING);
