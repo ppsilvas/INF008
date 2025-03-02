@@ -3,13 +3,16 @@ package br.edu.ifba.inf008.shell;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import br.edu.ifba.inf008.interfaces.ILibraryController;
 import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.BooksStatus;
 import br.edu.ifba.inf008.models.Library;
 import br.edu.ifba.inf008.models.Loan;
 import br.edu.ifba.inf008.models.User;
@@ -52,23 +55,34 @@ public class LibraryController implements ILibraryController {
     }
 
     @Override
-    public boolean loanBook(User user, Book book, LocalDate loanDate){
-        if(book != null && user != null && book.getIsAvailable() && user.getBorrowedBooks().size()<5){
-            user.borrowBook(book);
-            Loan loan = new Loan(user, book, loanDate);
+    public boolean loanBook(User user, ArrayList<Book> books, LocalDate loanDate){
+        Loan loan = new Loan();
+        if(books.isEmpty() && user == null && books.size()>5){
+            return false;
+        }else{
+            for(Book book:books){
+                if(book.getIsAvailable()){
+                    loan.setBooks(book, true);
+                    user.borrowBook(book);
+                }else{
+                    return false;
+                }
+            }
+            loan.setId();
+            loan.setUser(user);
+            loan.setLoanDate(loanDate);
             Library.loans.add(loan);
             return true;
         }
-        return false;
     }
 
     @Override
     public boolean returnBook(User user, Book book, int loanId){
         Optional<Loan> loan = Library.loans.stream().filter(b->b.getId() == loanId).findFirst();
-
         if(book != null && user != null && loan.isPresent()){
-            loan.get().setLoaned();
-            return user.returnBook(book);
+            Optional<BooksStatus> bookToRemove = loan.get().getBooks().stream().filter(b->b.getBook().equals(book)).findFirst();
+            user.returnBook(bookToRemove.get().getBook());
+            return loan.get().getBooks().remove(bookToRemove.get());
         }
         return false;
     }
@@ -86,29 +100,35 @@ public class LibraryController implements ILibraryController {
 
     @Override
     public TreeMap<User,List<Book>> getBorrowedBooks(){
-        TreeMap<User,List<Book>> borrowedBooks = new TreeMap<>(Comparator.comparing(User::getId));
-        for(Loan loan: Library.loans){
-            if(loan.getLoaned()){
-                borrowedBooks.computeIfAbsent(loan.getUser(), k-> new ArrayList<>()).add(loan.getBook());
+        TreeMap<User,List<Book>> borrowedBooks = new TreeMap<>(Comparator.comparing((User::getId)));
+        ArrayList<Book> books = new ArrayList<>();
+        for(Loan loan : Library.loans){
+            for(BooksStatus bookStatus: loan.getBooks()){
+                if(bookStatus.getIsLoaned()){
+                    books.add(bookStatus.getBook());  
+                }
             }
+            borrowedBooks.put(loan.getUser(), books);
         }
         return borrowedBooks;
     }
 
     @Override
-    public TreeMap<Double,Book> getLateBooks(){
-        TreeMap<Double,Book> lateBooks = new TreeMap<>();
-        for(Loan loan: Library.loans){
-            if(loan.getLoaned()&&loan.getReturnDate().isBefore(LocalDate.now())){
-                lateBooks.put(((LocalDate.now().toEpochDay()-loan.getReturnDate().toEpochDay())*0.5),loan.getBook());
+    public TreeMap<Book,Double> getLateBooks(){
+        TreeMap<Book,Double> lateBook = new TreeMap<>(Comparator.comparing((Book::getIsbn)));
+        for(Loan loan : Library.loans){
+            for(BooksStatus booksStatus: loan.getBooks()){
+                if(booksStatus.getIsLoaned() && loan.getReturnDate().toEpochDay()<LocalDate.now().toEpochDay()){
+                    lateBook.put(booksStatus.getBook(),(LocalDate.now().toEpochDay()-loan.getReturnDate().toEpochDay())*0.5);
+                }
             }
         }
-        return lateBooks;
+        return lateBook;
     }
 
     @Override
     public List<Loan> getLoans() {
-        return Library.loans.stream().filter(Loan::getLoaned).collect(Collectors.toList());
+        return Library.loans;
     }
 
     @Override

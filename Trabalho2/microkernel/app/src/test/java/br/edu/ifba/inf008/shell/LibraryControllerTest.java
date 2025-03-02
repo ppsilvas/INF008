@@ -1,6 +1,7 @@
 package br.edu.ifba.inf008.shell;
 
 import br.edu.ifba.inf008.models.Book;
+import br.edu.ifba.inf008.models.BooksStatus;
 import br.edu.ifba.inf008.models.Library;
 import br.edu.ifba.inf008.models.Loan;
 import br.edu.ifba.inf008.models.User;
@@ -51,11 +52,13 @@ class LibraryControllerTest {
     void testLoanBook_Success() {
         User user = new User("Pedro");
         Book book = new Book("Pequeno Principe","Antoine de Saint-Exupéry",2015,"Fantasia");
+        ArrayList<Book> books = new ArrayList<>();
+        books.add(book);
 
         Library.users.add(user);
         Library.books.add(book);
 
-        boolean result = libraryController.loanBook(user,book, LocalDate.now());
+        boolean result = libraryController.loanBook(user, books, LocalDate.now());
 
         assertTrue(result,"Loaning should be successfully.");
         assertEquals(1,user.getBorrowedBooks().size(),"User should have one borrowed book.");
@@ -66,11 +69,13 @@ class LibraryControllerTest {
         User user = new User("Pedro");
         Book book = new Book("Pequeno Principe","Antoine de Saint-Exupéry",2015,"Fantasia");
         book.setAvailable(false);
+        ArrayList<Book> books = new ArrayList<>();
+        books.add(book);
 
         Library.users.add(user);
         Library.books.add(book);
 
-        boolean result = libraryController.loanBook(user,book, LocalDate.now());
+        boolean result = libraryController.loanBook(user, books, LocalDate.now());
 
         assertFalse(result,"Loaning should not be possible for an unavailable book.");
     }
@@ -79,7 +84,9 @@ class LibraryControllerTest {
     void testReturnBook_Success() {
         User user = new User("Pedro");
         Book book = new Book("Pequeno Principe","Antoine de Saint-Exupéry",2015,"Fantasia");
-        Loan loan = new Loan(user,book, LocalDate.now());
+        ArrayList<BooksStatus> loanedBooks = new ArrayList<>();
+        loanedBooks.add(new BooksStatus(book, true));
+        Loan loan = new Loan(user, loanedBooks, LocalDate.now());
         user.borrowBook(book);
 
         Library.users.add(user);
@@ -128,7 +135,9 @@ class LibraryControllerTest {
     void testCalculateFine_NoFine() {
         User user = new User("Pedro");
         Book book = new Book("Pequeno Principe","Antoine de Saint-Exupéry",2015,"Fantasia");
-        Loan loan = new Loan(user,book,LocalDate.now());
+        ArrayList<BooksStatus> loanedBooks = new ArrayList<>();
+        loanedBooks.add(new BooksStatus(book, true));
+        Loan loan = new Loan(user,loanedBooks,LocalDate.now());
 
         Library.loans.add(loan);
 
@@ -141,7 +150,9 @@ class LibraryControllerTest {
     void testCalculateFine_WithFine() {
         User user = new User("Pedro");
         Book book = new Book("Pequeno Principe","Antoine de Saint-Exupéry",2015,"Fantasia");
-        Loan loan = new Loan(user,book,LocalDate.now().minusDays(15));
+        ArrayList<BooksStatus> loanedBooks = new ArrayList<>();
+        loanedBooks.add(new BooksStatus(book, true));
+        Loan loan = new Loan(user,loanedBooks,LocalDate.now().minusDays(15));
 
         Library.loans.add(loan);
 

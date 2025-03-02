@@ -50,11 +50,11 @@ public class DelayReport implements IDelayReport{
 
         tableView.getColumns().addAll(titleColumn,fineColumn);
 
-        TreeMap<Double,Book>lateBooks = libraryController.getLateBooks();
+        TreeMap<Book,Double>lateBooks = libraryController.getLateBooks();
 
         ObservableList<Map.Entry<Book,Double>> lateBooksWithFine = FXCollections.observableArrayList(
             lateBooks.entrySet().stream()
-                .map(entry-> new AbstractMap.SimpleEntry<>(entry.getValue(),  entry.getKey()))
+                .map(entry-> new AbstractMap.SimpleEntry<>(entry.getKey(),  entry.getValue()))
                 .collect(Collectors.toList())
         );
 

@@ -1,11 +1,17 @@
 package br.edu.ifba.inf008.plugins;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import br.edu.ifba.inf008.interfaces.*;
 import br.edu.ifba.inf008.models.Book;
 import br.edu.ifba.inf008.models.Loan;
 import br.edu.ifba.inf008.models.User;
+import br.edu.ifba.inf008.models.BooksStatus;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -203,14 +209,15 @@ public class LibraryUi implements ILibraryPluginUi{
                 newValue == null || newValue.isEmpty() || book.getTitle().toLowerCase().contains(newValue.toLowerCase())
         ));
 
-        final Book[] selectedBook = {null};
+        final ArrayList<Book> selectedBooks = new ArrayList<>();
+        bookListView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         bookListView.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
             if (newSelection != null) {
-                selectedBook[0] = newSelection;
+                selectedBooks.add(newSelection);
             }
         });
 
-        bookListView.setPrefSize(100, 50);
+        bookListView.setPrefSize(100, 150);
         bookListView.setPadding(new Insets(2, 2, 2, 2));
         bookListView.isResizable();
 
@@ -221,16 +228,14 @@ public class LibraryUi implements ILibraryPluginUi{
         submitButton.setOnAction(e -> {
             try {
                 LocalDate loanDate = loanDatePicker.getValue();
-
-                if (selectedBook[0] == null) {
-                    showAlert("Selecione um livro!", Alert.AlertType.WARNING);
-                    return;
-                }
-
                 User user = selectedUser[0];
-                Book book = selectedBook[0];
-
-                if (libraryController.loanBook(user, book, loanDate)) {
+                ArrayList<Book> books = selectedBooks;
+                if (selectedBooks.isEmpty()) {
+                    showAlert("Selecione um livro!", Alert.AlertType.WARNING);
+                }else if(books.size()>5){
+                    showAlert("Usuário só pode pegar 5 livros emprestados por vez. Selecione novamente", Alert.AlertType.WARNING);
+                    books.clear();
+                }else if (libraryController.loanBook(user, books, loanDate)) {
                     showAlert("Livro emprestado com sucesso!", Alert.AlertType.INFORMATION);
                     stage.close();
                 } else {
@@ -259,43 +264,77 @@ public class LibraryUi implements ILibraryPluginUi{
         Stage stage = new Stage();
         stage.setTitle("Devolver Livro");
 
-        ListView<Loan> loanList = new ListView<>();
+        ListView<Map<Book,Map<Integer,User>>> loanList = new ListView<>();
 
-        ObservableList<Loan> allLoans = FXCollections.observableArrayList(libraryController.getLoans());
-
+        ObservableList<Map<Book,Map<Integer,User>>> allLoans = FXCollections.observableArrayList(
+            libraryController.getLoans().stream()
+                .filter(loan->loan.getBooks() != null && !loan.getBooks().isEmpty())
+                .flatMap(loan->loan.getBooks().stream()
+                    .map(loanedBook->{
+                        Map<Integer,User> loanUserMap = new HashMap<>();
+                        loanUserMap.put(loan.getId(), loan.getUser());
+                        Map<Book,Map<Integer,User>> bookUserMap = new HashMap<>();
+                        bookUserMap.put(loanedBook.getBook(), loanUserMap);
+                        return bookUserMap;
+                    })
+                )
+                .collect(Collectors.toList())
+        );
         loanList.setItems(allLoans);
         loanList.setCellFactory(param -> new ListCell<>(){
             @Override
-            protected void updateItem(Loan loan, boolean empty){
-                super.updateItem(loan, empty);
-                setText((empty || loan == null)?null:"ID-"+loan.getId()+" | Livro: "+loan.getBook().getTitle()+" | Usuário: "+loan.getUser().getName());
+            protected void updateItem(Map<Book,Map<Integer,User>> item, boolean empty){
+                super.updateItem(item, empty);
+                if(empty || item == null){
+                    setText(null);
+                }else{
+                    Map.Entry<Book,Map<Integer,User>> entry = item.entrySet().iterator().next();
+                    Book book = entry.getKey();
+                    Map<Integer,User> loanUser = entry.getValue();
+                    StringBuilder sb = new StringBuilder();
+                    loanUser.forEach((loanId,user)->{
+                        sb.append("Empréstimo Id: ").append(loanId)
+                        .append(" | Livro: ").append(book.getTitle())
+                        .append(" | Usuário: ").append(user.getName())
+                        .append("\n");
+                    });
+                    setText(sb.length()>0 ? sb.toString():null);
+                }
             }
         });
 
-        final Loan[] selectedLoan = {null};
-        loanList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+        ObservableList<Map<Book,Map<Integer,User>>> selectedLoan = FXCollections.observableArrayList();
+        loanList.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         loanList.getSelectionModel().selectedItemProperty().addListener((observable, oldSelection, newSelection)->{
-            if(newSelection != null){
-                selectedLoan[0] = newSelection;
-            }
+            selectedLoan.clear();
+            selectedLoan.addAll(newSelection);
+
+            selectedLoan.forEach(item -> {
+                Map.Entry<Book,Map<Integer,User>> entry = item.entrySet().iterator().next();
+                Map<Integer,User> loanUser = entry.getValue();
+            });
         });
 
         Button submitButton = new Button("Devolver");
         submitButton.setOnAction(e -> {
             try {
-                Loan loan = selectedLoan[0];
-                User user = loan.getUser();
-                Book book = loan.getBook();
-                if (libraryController.returnBook(user, book, loan.getId())) {
-                    double fine = libraryController.calculateFine(loan.getId());
-                    if(fine > 0.0)
-                        showAlert("A devolução está atrasada. Pague a multa no valor R$ "+fine+".", Alert.AlertType.WARNING);
-                    else
-                        showAlert("Livro devolvido com sucesso!", Alert.AlertType.CONFIRMATION);
-                    stage.close();
-                } else {
-                    showAlert("Falha ao devolver livro.", Alert.AlertType.ERROR);
-                }
+                selectedLoan.forEach(item -> {
+                    Map.Entry<Book,Map<Integer,User>> entry = item.entrySet().iterator().next();
+                    Book book = entry.getKey();
+                    Map<Integer,User> loanUser = entry.getValue();
+                    loanUser.forEach((loanId,user)->{
+                        if (libraryController.returnBook(user, book, loanId)) {
+                            double fine = libraryController.calculateFine(loanId);
+                            if(fine > 0.0)
+                                showAlert("A devolução está atrasada. Pague a multa no valor R$ "+fine+".", Alert.AlertType.WARNING);
+                            else
+                                showAlert("Livro devolvido com sucesso!", Alert.AlertType.CONFIRMATION);
+                            stage.close();
+                        } else {
+                            showAlert("Falha ao devolver livro.", Alert.AlertType.ERROR);
+                        }
+                    });
+                });
             } catch (NumberFormatException ex) {
                 showAlert("Campos inválidos.", Alert.AlertType.ERROR);
             }

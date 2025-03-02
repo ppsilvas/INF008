@@ -32,7 +32,7 @@ public class User implements Serializable {
     }
 
     public void borrowBook(Book book){
-        if(book.getIsAvailable() && borrowedBooks.size()<5) {
+        if(book.getIsAvailable()) {
             borrowedBooks.add(book);
             book.setAvailable(false);
         }

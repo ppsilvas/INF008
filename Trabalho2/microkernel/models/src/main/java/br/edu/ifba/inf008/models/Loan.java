@@ -2,27 +2,27 @@ package br.edu.ifba.inf008.models;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Loan implements Serializable {
     public static int numberOfLoans;
     private int id;
     private User user;
-    private Book book;
+    private ArrayList<BooksStatus> books;
     private LocalDate loanDate;
     private LocalDate returnDate;
-    private boolean loaned;
 
     public Loan(){
-
+        this.books = new ArrayList<>();
     }
 
-    public Loan(User user, Book book, LocalDate loanDate){
+    public Loan(User user, ArrayList<BooksStatus> books, LocalDate loanDate){
         this.id = numberOfLoans++;
         this.user = user;
-        this.book = book;
+        this.books = books;
         this.loanDate = loanDate;
         this.returnDate = loanDate.plusDays(14);
-        this.loaned = true;
     }
 
     public int getId() {
@@ -33,8 +33,8 @@ public class Loan implements Serializable {
         return user;
     }
 
-    public Book getBook() {
-        return book;
+    public ArrayList<BooksStatus> getBooks() {
+        return books;
     }
 
     public LocalDate getLoanDate() {
@@ -45,11 +45,21 @@ public class Loan implements Serializable {
         return returnDate;
     }
 
-    public boolean getLoaned(){
-        return loaned;
+    public void setId() {
+        this.id = numberOfLoans++;
     }
 
-    public void setLoaned(){
-        loaned = false;
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+    public void setBooks(Book book, boolean isLoaned) {
+        BooksStatus newBook = new BooksStatus(book, isLoaned);
+        books.add(newBook);
+    }
+
+    public void setLoanDate(LocalDate loanDate) {
+        this.loanDate = loanDate;
+        this.returnDate = loanDate.plusDays(14);
     }
 }
